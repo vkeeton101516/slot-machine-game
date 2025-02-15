@@ -1,80 +1,85 @@
-document.addEventListener("DOMContentLoaded", function() {
-    let remainingSpins = localStorage.getItem("remainingSpins");
-    if (remainingSpins === null) {
-        localStorage.setItem("remainingSpins", 3);
-        remainingSpins = 3;
-    }
+document.addEventListener("DOMContentLoaded", function () {
+    const spinButton = document.getElementById("spin");
+    const slotReels = document.querySelectorAll(".reel");
+    const message = document.getElementById("message");
+    const remainingSpinsKey = "remainingSpins";
+    const googleScriptURL = "https://script.google.com/macros/s/AKfycbwohCvT1GGGlUZRgrriFl7h_UVztADtAGGOZvPHsPoWxFUH5mMMFpiODNykuh06h0cTOw/exec"; // Replace with your actual Apps Script URL
 
-    document.getElementById("spin-button").addEventListener("click", function() {
-        if (remainingSpins > 0) {
-            spinReels();
-            remainingSpins--;
-            localStorage.setItem("remainingSpins", remainingSpins);
-            document.getElementById("remaining-spins").textContent = remainingSpins;
+    let remainingSpins = localStorage.getItem(remainingSpinsKey) !== null ? parseInt(localStorage.getItem(remainingSpinsKey)) : 3;
+    
+    updateSpinCountDisplay();
+
+    spinButton.addEventListener("click", function () {
+        if (remainingSpins <= 0) {
+            message.textContent = "No more spins left for today!";
+            return;
+        }
+
+        remainingSpins--;
+        localStorage.setItem(remainingSpinsKey, remainingSpins);
+        updateSpinCountDisplay();
+
+        let result = spinReels();
+        let prize = determinePrize(result);
+        let confirmationNumber = generateConfirmationNumber();
+
+        if (prize) {
+            message.textContent = `Congratulations! You won a ${prize}! Confirmation #${confirmationNumber}`;
+            sendToGoogleSheets(confirmationNumber, prize);
         } else {
-            alert("No more spins left for today!");
+            message.textContent = "Sorry, no win this time!";
         }
     });
 
-    function spinReels() {
-        const slotSymbols = ["🍒", "🍋", "🔔", "🍊", "⭐", "7️⃣"];
-        const reels = [
-            document.getElementById("reel1"),
-            document.getElementById("reel2"),
-            document.getElementById("reel3")
-        ];
-
-        reels.forEach(reel => {
-            reel.textContent = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
-        });
-
-        setTimeout(checkResult, 1000);
+    function updateSpinCountDisplay() {
+        document.getElementById("spin-count").textContent = `Remaining Spins: ${remainingSpins}`;
     }
 
-    function checkResult() {
-        const reels = [
-            document.getElementById("reel1").textContent,
-            document.getElementById("reel2").textContent,
-            document.getElementById("reel3").textContent
-        ];
+    function spinReels() {
+        let symbols = ["🍒", "🍋", "🍊", "🍉", "⭐", "💎"];
+        let result = [];
 
-        let prize = "No Win";
-        if (reels[0] === reels[1] && reels[1] === reels[2]) {
-            prize = "Gift Card $5";
-        }
+        slotReels.forEach(reel => {
+            let randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
+            reel.textContent = randomSymbol;
+            result.push(randomSymbol);
+        });
 
-        if (prize !== "No Win") {
-            const confirmationNumber = generateConfirmationNumber();
-            alert(`Congratulations! You won: ${prize}. Your confirmation number: ${confirmationNumber}`);
-            sendToGoogleSheets(confirmationNumber, prize);
-        } else {
-            alert("Try again!");
-        }
+        return result;
+    }
+
+    function determinePrize(result) {
+        let counts = result.reduce((acc, symbol) => {
+            acc[symbol] = (acc[symbol] || 0) + 1;
+            return acc;
+        }, {});
+
+        if (counts["⭐"] === 3) return "$5 Gift Card"; // Only 5 winners per week, handled in Google Sheets
+        return null;
     }
 
     function generateConfirmationNumber() {
-        return "CONF" + Math.floor(100000 + Math.random() * 900000);
+        return Math.floor(100000 + Math.random() * 900000); // 6-digit random number
     }
 
     function sendToGoogleSheets(confirmationNumber, prize) {
-        const timestamp = new Date().toISOString();
-        const spinCount = localStorage.getItem("remainingSpins");
-
-        fetch("https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_URL/exec", {
+        fetch(googleScriptURL, {
             method: "POST",
-            mode: "no-cors", // Prevents CORS errors
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                timestamp: timestamp,
+                timestamp: new Date().toISOString(),
                 confirmationNumber: confirmationNumber,
-                spinCount: spinCount,
+                spinCount: remainingSpins,
                 prize: prize
             })
         })
-        .then(() => console.log("Data sent successfully"))
+        .then(response => response.json())
+        .then(data => console.log("Data sent successfully:", data))
         .catch(error => console.error("Error sending data:", error));
     }
 });
 
+      
+  
