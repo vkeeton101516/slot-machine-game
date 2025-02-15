@@ -1,68 +1,80 @@
-const sheetUrl = 'https://script.google.com/macros/s/AKfycbwohCvT1GGGlUZRgrriFl7h_UVztADtAGGOZvPHsPoWxFUH5mMMFpiODNykuh06h0cTOw/exec'; // Your Google Apps Script URL
-
-let spinCount = 0; // Initialize spin count
-let confirmationNumber = '';
-
-// Ensure the user can only spin 3 times per day
-const maxSpinsPerDay = 3;
-
-// Function to send data to Google Sheets
-function sendToGoogleSheets(data) {
-    fetch(sheetUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(responseData => {
-        console.log('Data sent to Google Sheets successfully:', responseData);
-    })
-    .catch(error => {
-        console.error('Error sending data:', error);
-    });
-}
-
-// Function to get the confirmation number
-function generateConfirmationNumber() {
-    return Math.floor(Math.random() * 1000000).toString().padStart(6, '0'); // Generate a random 6-digit number
-}
-
-// Function to handle the spin logic
-function handleSpin() {
-    // Check if the user has exceeded the max spins per day
-    if (spinCount >= maxSpinsPerDay) {
-        alert('You have reached your maximum spins for today.');
-        return;
+document.addEventListener("DOMContentLoaded", function() {
+    let remainingSpins = localStorage.getItem("remainingSpins");
+    if (remainingSpins === null) {
+        localStorage.setItem("remainingSpins", 3);
+        remainingSpins = 3;
     }
 
-    spinCount++; // Increment spin count
+    document.getElementById("spin-button").addEventListener("click", function() {
+        if (remainingSpins > 0) {
+            spinReels();
+            remainingSpins--;
+            localStorage.setItem("remainingSpins", remainingSpins);
+            document.getElementById("remaining-spins").textContent = remainingSpins;
+        } else {
+            alert("No more spins left for today!");
+        }
+    });
 
-    // Generate a confirmation number
-    confirmationNumber = generateConfirmationNumber();
+    function spinReels() {
+        const slotSymbols = ["🍒", "🍋", "🔔", "🍊", "⭐", "7️⃣"];
+        const reels = [
+            document.getElementById("reel1"),
+            document.getElementById("reel2"),
+            document.getElementById("reel3")
+        ];
 
-    // Get current time (timestamp)
-    const timestamp = new Date().toISOString();
+        reels.forEach(reel => {
+            reel.textContent = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+        });
 
-    // Simulate getting a prize (for now, you can change this to actual logic)
-    const prize = '$5 Gift Card';
+        setTimeout(checkResult, 1000);
+    }
 
-    // Prepare the data to send to Google Sheets
-    const data = {
-        confirmationNumber: confirmationNumber,
-        timestamp: timestamp,
-        spinCount: spinCount,
-        prize: prize
-    };
+    function checkResult() {
+        const reels = [
+            document.getElementById("reel1").textContent,
+            document.getElementById("reel2").textContent,
+            document.getElementById("reel3").textContent
+        ];
 
-    // Send the data to Google Sheets
-    sendToGoogleSheets(data);
+        let prize = "No Win";
+        if (reels[0] === reels[1] && reels[1] === reels[2]) {
+            prize = "Gift Card $5";
+        }
 
-    // Log the result
-    console.log('Spin completed:', data);
-}
+        if (prize !== "No Win") {
+            const confirmationNumber = generateConfirmationNumber();
+            alert(`Congratulations! You won: ${prize}. Your confirmation number: ${confirmationNumber}`);
+            sendToGoogleSheets(confirmationNumber, prize);
+        } else {
+            alert("Try again!");
+        }
+    }
 
-// Call this when the spin button is clicked (for example)
-document.getElementById('spinButton').addEventListener('click', handleSpin);
+    function generateConfirmationNumber() {
+        return "CONF" + Math.floor(100000 + Math.random() * 900000);
+    }
+
+    function sendToGoogleSheets(confirmationNumber, prize) {
+        const timestamp = new Date().toISOString();
+        const spinCount = localStorage.getItem("remainingSpins");
+
+        fetch("https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_URL/exec", {
+            method: "POST",
+            mode: "no-cors", // Prevents CORS errors
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                timestamp: timestamp,
+                confirmationNumber: confirmationNumber,
+                spinCount: spinCount,
+                prize: prize
+            })
+        })
+        .then(() => console.log("Data sent successfully"))
+        .catch(error => console.error("Error sending data:", error));
+    }
+});
 
