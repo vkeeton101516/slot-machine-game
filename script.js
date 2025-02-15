@@ -2,17 +2,17 @@
 emailjs.init("YOUR_USER_ID"); // Replace with your actual EmailJS User ID
 
 // Track the number of spins and wins
-let spinCount = localStorage.getItem('spinCount') || 0;
+let spinCount = parseInt(localStorage.getItem('spinCount')) || 0;
 let dailyWin = localStorage.getItem('dailyWin') === 'true' ? true : false;
-let winnersThisMonth = localStorage.getItem('winnersThisMonth') || 0;
+let winnersThisMonth = parseInt(localStorage.getItem('winnersThisMonth')) || 0;
 const maxSpins = 5;
 const maxWinners = 20;
 const dailyLimitMessage = "You've reached your spin limit for today. Please come back tomorrow!";
 
+// Prize details
 const slotImages = [
     "https://iili.io/2m5cdSp.jpg" // $5 Gift Card (only this one will be shown)
 ];
-
 const prizeAmount = 5; // $5 prize
 
 // Function to disable the spin button if the player has reached their limit
@@ -20,6 +20,8 @@ function checkSpinLimit() {
     if (spinCount >= maxSpins) {
         document.querySelector('.spin-button').disabled = true;
         document.getElementById('result').textContent = dailyLimitMessage;
+    } else {
+        document.querySelector('.spin-button').disabled = false;
     }
 }
 
@@ -31,9 +33,8 @@ function spin() {
         return;
     }
 
-    // Simulate the spin
-    const randomIndex = Math.floor(Math.random() * slotImages.length);
-    const winningImage = slotImages[randomIndex];
+    // Simulate the spin (always show $5 gift card)
+    const winningImage = slotImages[0]; // Always show $5 card
     document.getElementById('slot1').innerHTML = `<img src="${winningImage}" alt="$5 Gift Card">`;
 
     // Handle winning logic (always $5)
@@ -48,6 +49,7 @@ function spin() {
 
         // Send email with confirmation number, name, and prize amount
         sendWinnerEmail();
+        document.getElementById('result').textContent = `Congratulations! You won a $${prizeAmount} gift card!`;
     } else {
         document.getElementById('result').textContent = "Sorry, no more winners this month!";
     }
@@ -81,7 +83,7 @@ function sendWinnerEmail() {
         });
 }
 
-// Reset spin count at midnight (optional)
+// Reset spin count and win status at midnight
 setInterval(() => {
     const now = new Date();
     if (now.getHours() === 0 && now.getMinutes() === 0) {
