@@ -40,19 +40,19 @@
         // Initialize EmailJS with your user ID
         emailjs.init("YOUR_USER_ID"); // Replace with your actual EmailJS User ID
 
-        // Track the number of spins and wins
+        // Track the number of spins, wins, and winners
         let spinCount = parseInt(localStorage.getItem('spinCount')) || 0;
         let dailyWin = localStorage.getItem('dailyWin') === 'true' ? true : false;
         let winnersThisMonth = parseInt(localStorage.getItem('winnersThisMonth')) || 0;
         const maxSpins = 5;
         const maxWinners = 20;
         const dailyLimitMessage = "You've reached your spin limit for today. Please come back tomorrow!";
+        const prizeAmount = 5; // Only $5 prize
 
         // Prize details (only $5 prize will be won)
         const slotImages = [
             "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card (only this one will be shown)
         ];
-        const prizeAmount = 5; // $5 prize
 
         // Function to disable the spin button if the player has reached their limit
         function checkSpinLimit() {
