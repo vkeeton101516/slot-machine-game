@@ -5,154 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Devoted Deals Slots</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-image: url('https://freeimghost.net/images/2025/02/14/bg.jpg');
-            background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            flex-direction: column;
-        }
-
-        .header {
-            font-size: 50px;
-            font-weight: bold;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 40px;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            animation: neonGlow 1.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes neonGlow {
-            0% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
-            50% { text-shadow: 0 0 20px #ff3399, 0 0 30px #ff3399, 0 0 40px #ff3399; }
-            100% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
-        }
-
-        .slot-container {
-            text-align: center;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 800px;
-        }
-
-        .slot-machine {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .slot {
-            width: 120px;
-            height: 120px;
-            border-radius: 10px;
-            border: 4px solid #fff;
-            overflow: hidden;
-            background: #222;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-            transition: transform 1s ease-in-out;
-        }
-
-        .slot img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .spin-button {
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #ff66b2, #ff3399);
-            color: white;
-            font-size: 18px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
-            transition: all 0.3s ease;
-        }
-
-        .spin-button:hover {
-            background: linear-gradient(135deg, #ff3385, #ff80b3);
-            transform: scale(1.1);
-        }
-
-        .result {
-            margin-top: 20px;
-            font-size: 28px;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-        }
-
-        .warning {
-            color: red;
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 15px;
-        }
-
-        .spinning {
-            animation: spin 1s ease-in-out;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(1080deg);
-            }
-        }
-
-        /* Style for the winners list */
-        .winners-list {
-            margin-top: 40px;
-            color: white;
-            text-align: center;
-            font-size: 18px;
-        }
-
-        .winners-table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-
-        .winners-table th, .winners-table td {
-            border: 1px solid #fff;
-            padding: 8px;
-            text-align: center;
-        }
-
-        .winners-table th {
-            background-color: #ff3399;
-        }
-
+        /* Your previous styles here */
     </style>
 </head>
 <body>
 
+    <!-- Header -->
     <div class="header">Devoted Deals Slots</div>
 
+    <!-- Slot Machine Container -->
     <div class="slot-container">
         <div class="slot-machine">
             <div class="slot" id="slot1">
                 <img src="https://iili.io/2m5cdSp.jpg" alt="$5 Gift Card">
             </div>
             <div class="slot" id="slot2">
-                <img src="https://iili.io/2m5ccib.jpg" alt="$10 Gift Card">
+                <img src="https://iili.io/2m5cdSp.jpg" alt="$5 Gift Card">
             </div>
             <div class="slot" id="slot3">
-                <img src="https://iili.io/2m5lFrx.jpg" alt="$50 Gift Card">
+                <img src="https://iili.io/2m5cdSp.jpg" alt="$5 Gift Card">
             </div>
         </div>
 
@@ -162,107 +33,108 @@
         <div class="warning" id="warning"></div>
     </div>
 
-    <!-- Display winners' data -->
-    <div class="winners-list">
-        <h3>Winners List</h3>
-        <table class="winners-table" id="winnersTable">
-            <thead>
-                <tr>
-                    <th>Winner Name</th>
-                    <th>Prize</th>
-                    <th>Confirmation Number</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Winner entries will appear here -->
-            </tbody>
-        </table>
-    </div>
+    <!-- EmailJS Script -->
+    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
 
     <script>
-        // Store winners' data
-        let winners = [];
+        // Initialize EmailJS with your user ID
+        emailjs.init("YOUR_USER_ID"); // Replace with your actual EmailJS User ID
 
+        // Track the number of spins and wins
+        let spinCount = parseInt(localStorage.getItem('spinCount')) || 0;
+        let dailyWin = localStorage.getItem('dailyWin') === 'true' ? true : false;
+        let winnersThisMonth = parseInt(localStorage.getItem('winnersThisMonth')) || 0;
+        const maxSpins = 5;
+        const maxWinners = 20;
+        const dailyLimitMessage = "You've reached your spin limit for today. Please come back tomorrow!";
+
+        // Prize details (only $5 prize will be won)
         const slotImages = [
-            "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card
-            "https://iili.io/2m5ccib.jpg",  // $10 Gift Card
-            "https://iili.io/2m5lFrx.jpg",  // $50 Gift Card
+            "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card (only this one will be shown)
         ];
+        const prizeAmount = 5; // $5 prize
 
-        const prizes = [
-            "$5 Gift Card",
-            "$10 Gift Card",
-            "$50 Gift Card",
-        ];
+        // Function to disable the spin button if the player has reached their limit
+        function checkSpinLimit() {
+            if (spinCount >= maxSpins) {
+                document.querySelector('.spin-button').disabled = true;
+                document.getElementById('result').textContent = dailyLimitMessage;
+            } else {
+                document.querySelector('.spin-button').disabled = false;
+            }
+        }
 
+        // Function to handle the spin action
         function spin() {
-            const resultDiv = document.getElementById("result");
-            const warningDiv = document.getElementById("warning");
+            // Check if the user has already won today
+            if (dailyWin) {
+                alert("You've already won today! Please come back tomorrow.");
+                return;
+            }
 
-            // Clear previous result and warnings
-            resultDiv.textContent = "";
-            warningDiv.textContent = "";
+            // Simulate the spin (always show 3 $5 cards for a win)
+            const winningImage = slotImages[0]; // Always show $5 card for all three slots
+            document.getElementById('slot1').innerHTML = `<img src="${winningImage}" alt="$5 Gift Card">`;
+            document.getElementById('slot2').innerHTML = `<img src="${winningImage}" alt="$5 Gift Card">`;
+            document.getElementById('slot3').innerHTML = `<img src="${winningImage}" alt="$5 Gift Card">`;
 
-            // Spin the slots
-            const slot1 = document.getElementById("slot1");
-            const slot2 = document.getElementById("slot2");
-            const slot3 = document.getElementById("slot3");
+            // Handle winning logic (always $5)
+            if (winnersThisMonth < maxWinners) {
+                // Update the number of winners this month
+                winnersThisMonth++;
+                localStorage.setItem('winnersThisMonth', winnersThisMonth);
 
-            const slot1Index = Math.floor(Math.random() * slotImages.length);
-            const slot2Index = Math.floor(Math.random() * slotImages.length);
-            const slot3Index = Math.floor(Math.random() * slotImages.length);
+                // Mark that the player has won today
+                dailyWin = true;
+                localStorage.setItem('dailyWin', 'true');
 
-            slot1.style.transform = "rotate(1080deg)";
-            slot2.style.transform = "rotate(1080deg)";
-            slot3.style.transform = "rotate(1080deg)";
+                // Send email with confirmation number, name, and prize amount
+                sendWinnerEmail();
+                document.getElementById('result').textContent = `Congratulations! You won a $${prizeAmount} gift card!`;
+            } else {
+                document.getElementById('result').textContent = "Sorry, no more winners this month!";
+            }
 
-            setTimeout(() => {
-                slot1.style.transform = "";
-                slot2.style.transform = "";
-                slot3.style.transform = "";
+            // Update spin count and check limits
+            spinCount++;
+            localStorage.setItem('spinCount', spinCount);
+            checkSpinLimit();
+        }
 
-                // Assign random images
-                slot1.querySelector("img").src = slotImages[slot1Index];
-                slot2.querySelector("img").src = slotImages[slot2Index];
-                slot3.querySelector("img").src = slotImages[slot3Index];
-
-                // Check if all three slots match
-                if (slot1Index === slot2Index && slot2Index === slot3Index) {
-                    const prize = prizes[slot1Index];
-                    const confirmationNumber = "CONFIRM-" + Math.floor(Math.random() * 1000000);  // Example random confirmation number
-                    resultDiv.textContent = `Congratulations! You won a ${prize}! Confirmation Number: ${confirmationNumber}`;
-
-                    // Add winner to the winners list
-                    const winnerName = prompt("Enter your name: "); // Get winner's name
-                    winners.push({
-                        name: winnerName,
-                        prize: prize,
-                        confirmationNumber: confirmationNumber,
-                        date: new Date().toLocaleString(),
-                    });
-
-                    // Update the winners table
-                    updateWinnersTable();
-                } else {
-                    resultDiv.textContent = "Sorry, try again!";
+        // Function to send winner email (you can also store the information in a database or log it in local storage)
+        function sendWinnerEmail() {
+            const confirmationNumber = 'CONFIRMATION_NUMBER_' + Math.floor(Math.random() * 10000); // Random confirmation number for testing
+            const playerName = prompt("Enter your name"); // You could also store this or gather it via form
+            const message = {
+                service_id: 'service_9uor8xn', // Replace with your EmailJS service ID
+                template_id: 'template_yru4mx7', // Replace with your EmailJS template ID
+                user_id: 'YOUR_USER_ID', // Replace with your EmailJS user ID
+                template_params: {
+                    confirmation_number: confirmationNumber,
+                    player_name: playerName,
+                    prize_amount: prizeAmount
                 }
-            }, 2000);  // Time for spinning effect
+            };
+
+            emailjs.send(message.service_id, message.template_id, message.template_params, message.user_id)
+                .then(function(response) {
+                    console.log('Email sent successfully', response);
+                }, function(error) {
+                    console.error('Error sending email', error);
+                });
         }
 
-        function updateWinnersTable() {
-            const tableBody = document.getElementById("winnersTable").getElementsByTagName("tbody")[0];
-            tableBody.innerHTML = "";  // Clear the table body
+        // Reset spin count and win status at midnight
+        setInterval(() => {
+            const now = new Date();
+            if (now.getHours() === 0 && now.getMinutes() === 0) {
+                localStorage.removeItem('spinCount');
+                localStorage.removeItem('dailyWin');
+            }
+        }, 60000); // Check every minute
 
-            winners.forEach(winner => {
-                const row = tableBody.insertRow();
-                row.insertCell(0).textContent = winner.name;
-                row.insertCell(1).textContent = winner.prize;
-                row.insertCell(2).textContent = winner.confirmationNumber;
-                row.insertCell(3).textContent = winner.date;
-            });
-        }
+        // Initialize page state
+        checkSpinLimit();
     </script>
-
 </body>
 </html>
