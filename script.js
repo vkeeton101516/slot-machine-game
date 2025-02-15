@@ -9,9 +9,9 @@ const maxSpins = 5;
 const maxWinners = 20;
 const dailyLimitMessage = "You've reached your spin limit for today. Please come back tomorrow!";
 
-// Prize details
+// Prize details (only $5 prize will be won)
 const slotImages = [
-    "https://iili.io/2m5cdSp.jpg" // $5 Gift Card (only this one will be shown)
+    "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card (only this one will be shown)
 ];
 const prizeAmount = 5; // $5 prize
 
@@ -33,9 +33,11 @@ function spin() {
         return;
     }
 
-    // Simulate the spin (always show $5 gift card)
-    const winningImage = slotImages[0]; // Always show $5 card
+    // Simulate the spin (always show 3 $5 cards for a win)
+    const winningImage = slotImages[0]; // Always show $5 card for all three slots
     document.getElementById('slot1').innerHTML = `<img src="${winningImage}" alt="$5 Gift Card">`;
+    document.getElementById('slot2').innerHTML = `<img src="${winningImage}" alt="$5 Gift Card">`;
+    document.getElementById('slot3').innerHTML = `<img src="${winningImage}" alt="$5 Gift Card">`;
 
     // Handle winning logic (always $5)
     if (winnersThisMonth < maxWinners) {
