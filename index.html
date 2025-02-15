@@ -210,28 +210,41 @@
 
             document.getElementById("warning").innerText = "";
 
-            // Simulate spinning
-            const randomImages = [
-                slotImages[0], slotImages[0], slotImages[0] // Always $5
-            ];
+            // Show spinning animation
+            const slots = document.querySelectorAll(".slot img");
+            slots.forEach(slot => {
+                slot.parentElement.classList.add("spinning");
+            });
 
-            // Display the spin result
-            document.getElementById("slot1").querySelector("img").src = randomImages[0];
-            document.getElementById("slot2").querySelector("img").src = randomImages[1];
-            document.getElementById("slot3").querySelector("img").src = randomImages[2];
+            // Simulate spin delay (1 second)
+            setTimeout(() => {
+                // After spin completes, stop animation
+                slots.forEach(slot => {
+                    slot.parentElement.classList.remove("spinning");
+                });
 
-            const winner = {
-                name: "Player", // Replace with the actual player's name
-                prize: "$5 Gift Card",
-                date: new Date().toLocaleString()
-            };
+                // Set the result to always $5
+                const randomImages = [
+                    slotImages[0], slotImages[0], slotImages[0] // Always $5
+                ];
 
-            // Add winner info to winners list
-            winnersList.push(winner);
-            localStorage.setItem("winnersList", JSON.stringify(winnersList));
+                document.getElementById("slot1").querySelector("img").src = randomImages[0];
+                document.getElementById("slot2").querySelector("img").src = randomImages[1];
+                document.getElementById("slot3").querySelector("img").src = randomImages[2];
 
-            // Display winner info on the page
-            displayWinners();
+                // Display winner information
+                const winner = {
+                    name: "Player", // Replace with the actual player's name
+                    prize: "$5 Gift Card",
+                    date: new Date().toLocaleString()
+                };
+
+                winnersList.push(winner);
+                localStorage.setItem("winnersList", JSON.stringify(winnersList));
+
+                // Display winner info on the page
+                displayWinners();
+            }, 1000);
         }
 
         // Load the game state when the page loads
