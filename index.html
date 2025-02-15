@@ -107,7 +107,6 @@
             margin-top: 15px;
         }
 
-        /* Spin effect class */
         .spinning {
             animation: spin 1s ease-in-out;
         }
@@ -124,10 +123,8 @@
 </head>
 <body>
 
-    <!-- Header -->
     <div class="header">Devoted Deals Slots</div>
 
-    <!-- Slot Machine Container -->
     <div class="slot-container">
         <div class="slot-machine">
             <div class="slot" id="slot1">
@@ -145,21 +142,18 @@
 
         <div class="result" id="result"></div>
         <div class="warning" id="warning"></div>
-
         <div class="winner-info" id="winnerInfo"></div>
     </div>
 
-    <!-- EmailJS Script -->
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
 
     <script>
-        // Initialize EmailJS with your user ID
         emailjs.init("YOUR_USER_ID"); // Replace with your actual EmailJS User ID
 
         const slotImages = [
-            "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card
-            "https://iili.io/2m5ccib.jpg",  // $10 Gift Card
-            "https://iili.io/2m5lFrx.jpg"   // $50 Gift Card
+            "https://iili.io/2m5cdSp.jpg", // $5 Gift Card
+            "https://iili.io/2m5ccib.jpg", // $10 Gift Card
+            "https://iili.io/2m5lFrx.jpg"  // $50 Gift Card
         ];
 
         let spinsToday = 0;
@@ -167,7 +161,7 @@
         const winnersList = [];
         const playerName = "Player"; // You can modify this to be dynamic
 
-        // To keep track of spins and winners in localStorage
+        // Load saved game state
         function loadGameState() {
             const savedSpins = localStorage.getItem("spinsToday");
             spinsToday = savedSpins ? parseInt(savedSpins) : 0;
@@ -179,7 +173,7 @@
             }
         }
 
-        // Reset spin count at midnight (you can adjust this logic as needed)
+        // Reset spin count at midnight
         function resetSpins() {
             const now = new Date();
             const lastReset = localStorage.getItem("lastResetDate");
@@ -191,7 +185,7 @@
             }
         }
 
-        // Display winners on page
+        // Display winners
         function displayWinners() {
             const winnerInfo = document.getElementById("winnerInfo");
             winnerInfo.innerHTML = winnersList.map(winner => {
@@ -208,58 +202,61 @@
 
             spinsToday++;
             localStorage.setItem("spinsToday", spinsToday);
-
             document.getElementById("warning").innerText = "";
 
-            // Show spinning animation
+            // Spin animation
             const slots = document.querySelectorAll(".slot img");
             slots.forEach(slot => {
                 slot.parentElement.classList.add("spinning");
             });
 
-            // Simulate spin delay (1 second)
             setTimeout(() => {
-                // After spin completes, stop animation
+                // Stop spinning animation
                 slots.forEach(slot => {
                     slot.parentElement.classList.remove("spinning");
                 });
 
-                // Force the winning combination to always be 3 of $5 card
+                // Randomly pick a prize for each slot
                 const randomImages = [
-                    slotImages[0], slotImages[0], slotImages[0] // Always $5
+                    slotImages[Math.floor(Math.random() * slotImages.length)], 
+                    slotImages[Math.floor(Math.random() * slotImages.length)], 
+                    slotImages[Math.floor(Math.random() * slotImages.length)]
                 ];
 
                 document.getElementById("slot1").querySelector("img").src = randomImages[0];
                 document.getElementById("slot2").querySelector("img").src = randomImages[1];
                 document.getElementById("slot3").querySelector("img").src = randomImages[2];
 
-                // Display winner information
-                const winner = {
-                    name: playerName,
-                    prize: "$5 Gift Card",
-                    date: new Date().toLocaleString()
-                };
+                // Check if it's a winning combination (only $5)
+                if (randomImages[0] === slotImages[0] && randomImages[1] === slotImages[0] && randomImages[2] === slotImages[0]) {
+                    // Save the winner info
+                    const winner = {
+                        name: playerName,
+                        prize: "$5 Gift Card",
+                        date: new Date().toLocaleString()
+                    };
 
-                // Check if the player has already won today
+                    winnersList.push(winner);
+                    localStorage.setItem("winnersList", JSON.stringify(winnersList));
+
+                    // Display winner info
+                    displayWinners();
+                }
+
+                // Prevent multiple wins per day
                 if (winnersList.some(w => w.name === playerName && new Date(w.date).toDateString() === new Date().toDateString())) {
                     document.getElementById("warning").innerText = "You have already won today!";
                     return;
                 }
 
-                winnersList.push(winner);
-                localStorage.setItem("winnersList", JSON.stringify(winnersList));
-
-                // Display winner info on the page
-                displayWinners();
-
-                // Prevent further spins if the max winner limit is reached
+                // Enforce the winner limit for the month
                 if (winnersList.length > 20) {
                     document.getElementById("warning").innerText = "Winner limit reached for this month.";
                 }
-            }, 1000); // Adjust delay here
+            }, 1000);
         }
 
-        // Load the game state when the page loads
+        // Load the game state on page load
         window.onload = loadGameState;
     </script>
 
