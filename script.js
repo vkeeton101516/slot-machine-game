@@ -1,40 +1,68 @@
-document.getElementById('spin-button').addEventListener('click', spinReels);
+const sheetUrl = 'https://script.google.com/macros/s/AKfycbwohCvT1GGGlUZRgrriFl7h_UVztADtAGGOZvPHsPoWxFUH5mMMFpiODNykuh06h0cTOw/exec'; // Your Google Apps Script URL
 
-function spinReels() {
-  // Display message while spinning
-  document.getElementById('winning-message').textContent = 'Spinning...';
+let spinCount = 0; // Initialize spin count
+let confirmationNumber = '';
 
-  const reels = document.querySelectorAll('.reel');
-  const symbols = ['image1.jpg', 'image2.jpg', 'image3.jpg']; // Replace with actual image addresses from your Google Sheets
+// Ensure the user can only spin 3 times per day
+const maxSpinsPerDay = 3;
 
-  // Simulate reel spin by changing symbol position
-  reels.forEach((reel, index) => {
-    let randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
-    reel.innerHTML = <img src="${randomSymbol}" alt="Slot Symbol" class="slot-symbol">;
-    
-    // Add the smooth spinning effect by applying a translateY animation
-    setTimeout(() => {
-      reel.querySelector('.slot-symbol').style.transform = translateY(-1000px); // Spinning effect
-    }, 100);
-  });
-
-  // Check if user won (simple example of all reels showing same symbol)
-  setTimeout(() => {
-    checkWinningCondition();
-  }, 1000);
+// Function to send data to Google Sheets
+function sendToGoogleSheets(data) {
+    fetch(sheetUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(responseData => {
+        console.log('Data sent to Google Sheets successfully:', responseData);
+    })
+    .catch(error => {
+        console.error('Error sending data:', error);
+    });
 }
 
-function checkWinningCondition() {
-  const reels = document.querySelectorAll('.reel');
-  const firstSymbol = reels[0].querySelector('.slot-symbol').src;
-
-  const allSame = Array.from(reels).every(reel => {
-    return reel.querySelector('.slot-symbol').src === firstSymbol;
-  });
-
-  if (allSame) {
-    document.getElementById('winning-message').textContent = 'You Win!';
-  } else {
-    document.getElementById('winning-message').textContent = 'Try Again!';
-  }
+// Function to get the confirmation number
+function generateConfirmationNumber() {
+    return Math.floor(Math.random() * 1000000).toString().padStart(6, '0'); // Generate a random 6-digit number
 }
+
+// Function to handle the spin logic
+function handleSpin() {
+    // Check if the user has exceeded the max spins per day
+    if (spinCount >= maxSpinsPerDay) {
+        alert('You have reached your maximum spins for today.');
+        return;
+    }
+
+    spinCount++; // Increment spin count
+
+    // Generate a confirmation number
+    confirmationNumber = generateConfirmationNumber();
+
+    // Get current time (timestamp)
+    const timestamp = new Date().toISOString();
+
+    // Simulate getting a prize (for now, you can change this to actual logic)
+    const prize = '$5 Gift Card';
+
+    // Prepare the data to send to Google Sheets
+    const data = {
+        confirmationNumber: confirmationNumber,
+        timestamp: timestamp,
+        spinCount: spinCount,
+        prize: prize
+    };
+
+    // Send the data to Google Sheets
+    sendToGoogleSheets(data);
+
+    // Log the result
+    console.log('Spin completed:', data);
+}
+
+// Call this when the spin button is clicked (for example)
+document.getElementById('spinButton').addEventListener('click', handleSpin);
+
