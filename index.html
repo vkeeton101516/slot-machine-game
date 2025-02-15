@@ -223,7 +223,7 @@
                     slot.parentElement.classList.remove("spinning");
                 });
 
-                // Set the result to always $5
+                // Set the result to always $5 (3 of a kind)
                 const randomImages = [
                     slotImages[0], slotImages[0], slotImages[0] // Always $5
                 ];
@@ -244,7 +244,12 @@
 
                 // Display winner info on the page
                 displayWinners();
-            }, 1000);
+
+                // Prevent further spins if the max winner limit is reached
+                if (winnersList.length > 20) {
+                    document.getElementById("warning").innerText = "Winner limit reached for this month.";
+                }
+            }, 1000); // Adjust delay here
         }
 
         // Load the game state when the page loads
