@@ -122,6 +122,9 @@
 
     <!-- Slot Machine Container -->
     <div class="slot-container">
+        <!-- Player Name Input -->
+        <input type="text" id="playerName" placeholder="Enter your name" />
+
         <div class="slot-machine">
             <div class="slot" id="slot1">
                 <img src="https://iili.io/2m5cdSp.jpg" alt="$5 Gift Card">
@@ -144,87 +147,64 @@
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
 
     <script>
-        // Initialize EmailJS with your public key
-        emailjs.init("yCnHriCezqRaik1uV");  // Your public key from EmailJS dashboard
+        // Initialize EmailJS with your user ID
+        emailjs.init("YOUR_USER_ID");  // Replace with your actual EmailJS User ID
 
-        const slotImages = [
-            "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card
-            "https://iili.io/2m5ccib.jpg",  // $10 Gift Card
-            "https://iili.io/2m5lFrx.jpg",  // $50 Gift Card
-        ];
-
-        const prizes = [
-            "$5 Gift Card",
-            "$10 Gift Card",
-            "$50 Gift Card"
-        ];
-
-        // Function to generate random confirmation number
+        // Function to generate a confirmation number
         function generateConfirmationNumber() {
-            return Math.floor(Math.random() * 1000000); // Generates a random 6-digit number
+            return 'CONF-' + Math.random().toString(36).substr(2, 9); // Random confirmation number
         }
 
-        // Function to handle the spinning
+        // Function to simulate slot spin and display result
         function spin() {
-            // Disable the button to prevent multiple spins at once
-            document.querySelector(".spin-button").disabled = true;
-            document.querySelector(".spin-button").textContent = "Spinning...";
+            // Get the player's name from the input field
+            let playerName = document.getElementById("playerName").value || "Player";  // Default to "Player" if name is not provided
 
-            // Spin the slots by adding the "spinning" class
-            const slots = document.querySelectorAll(".slot");
-            slots.forEach(slot => {
-                slot.classList.add("spinning");
-            });
+            // Generate a confirmation number
+            let confirmationNumber = generateConfirmationNumber();
 
-            // Wait for the animation to complete and then show the result
+            // Simulate spinning
+            document.getElementById("slot1").classList.add("spinning");
+            document.getElementById("slot2").classList.add("spinning");
+            document.getElementById("slot3").classList.add("spinning");
+
             setTimeout(() => {
-                // Remove the "spinning" class
-                slots.forEach(slot => {
-                    slot.classList.remove("spinning");
+                // Randomly determine the winner
+                let amounts = ["$5 Gift Card", "$10 Gift Card", "$50 Gift Card"];
+                let winnings = [5, 10, 50];
+                let result = getRandomItem(winnings);
+                let winnerAmount = amounts[winnings.indexOf(result)];
+
+                // Display result
+                document.getElementById("result").textContent = `${playerName}, you won: ${winnerAmount}`;
+
+                // Send confirmation email
+                sendConfirmationEmail(playerName, confirmationNumber, winnerAmount);
+
+            }, 2000);
+        }
+
+        // Function to select a random item from the array
+        function getRandomItem(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        // Function to send confirmation email via EmailJS
+        function sendConfirmationEmail(playerName, confirmationNumber, winnerAmount) {
+            var templateParams = {
+                playerName: playerName,
+                confirmationNumber: confirmationNumber,
+                winnerAmount: winnerAmount
+            };
+
+            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+                .then(function(response) {
+                    console.log("Success:", response);
+                }, function(error) {
+                    console.log("Error:", error);
                 });
-
-                // Randomly choose the winning images
-                const selectedSlots = [
-                    slotImages[Math.floor(Math.random() * slotImages.length)],
-                    slotImages[Math.floor(Math.random() * slotImages.length)],
-                    slotImages[Math.floor(Math.random() * slotImages.length)]
-                ];
-
-                // Update the slot images to show the "spinning" result
-                for (let i = 0; i < selectedSlots.length; i++) {
-                    document.getElementById(`slot${i + 1}`).querySelector("img").src = selectedSlots[i];
-                }
-
-                // Determine the result
-                const prize = selectedSlots[0] === selectedSlots[1] && selectedSlots[1] === selectedSlots[2]
-                    ? prizes[slotImages.indexOf(selectedSlots[0])]
-                    : "Sorry, no win this time.";
-
-                // Display the result
-                document.getElementById("result").textContent = `You won: ${prize}`;
-                document.getElementById("warning").textContent = "";
-
-                // Send the confirmation number to the email (if there's a win)
-                if (prize !== "Sorry, no win this time.") {
-                    const confirmationNumber = generateConfirmationNumber();
-
-                    // Send the confirmation number to your email via EmailJS
-                    emailjs.send("service_9uor8xn", "template_yru4mx7", {
-                        confirmation_number: confirmationNumber,
-                        prize: prize
-                    }).then(response => {
-                        console.log("Email sent successfully", response);
-                    }).catch(error => {
-                        console.error("Error sending email", error);
-                    });
-                }
-
-                // Re-enable the spin button
-                document.querySelector(".spin-button").disabled = false;
-                document.querySelector(".spin-button").textContent = "Spin";
-            }, 1500);  // Wait for the animation duration to complete (1.5s)
         }
     </script>
+
 </body>
 </html>
-
