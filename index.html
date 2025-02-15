@@ -100,7 +100,6 @@
             margin-top: 15px;
         }
 
-        /* Spin effect class */
         .spinning {
             animation: spin 1s ease-in-out;
         }
@@ -110,21 +109,41 @@
                 transform: rotate(0deg);
             }
             100% {
-                transform: rotate(1080deg); /* 3 full rotations */
+                transform: rotate(1080deg);
             }
         }
+
+        /* Style for the winners list */
+        .winners-list {
+            margin-top: 40px;
+            color: white;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .winners-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        .winners-table th, .winners-table td {
+            border: 1px solid #fff;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .winners-table th {
+            background-color: #ff3399;
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- Header -->
     <div class="header">Devoted Deals Slots</div>
 
-    <!-- Slot Machine Container -->
     <div class="slot-container">
-        <!-- Player Name Input -->
-        <input type="text" id="playerName" placeholder="Enter your name" />
-
         <div class="slot-machine">
             <div class="slot" id="slot1">
                 <img src="https://iili.io/2m5cdSp.jpg" alt="$5 Gift Card">
@@ -143,66 +162,105 @@
         <div class="warning" id="warning"></div>
     </div>
 
-    <!-- EmailJS Script -->
-    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <!-- Display winners' data -->
+    <div class="winners-list">
+        <h3>Winners List</h3>
+        <table class="winners-table" id="winnersTable">
+            <thead>
+                <tr>
+                    <th>Winner Name</th>
+                    <th>Prize</th>
+                    <th>Confirmation Number</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Winner entries will appear here -->
+            </tbody>
+        </table>
+    </div>
 
     <script>
-        // Initialize EmailJS with your user ID
-        emailjs.init("YOUR_USER_ID");  // Replace with your actual EmailJS User ID
+        // Store winners' data
+        let winners = [];
 
-        // Function to generate a confirmation number
-        function generateConfirmationNumber() {
-            return 'CONF-' + Math.random().toString(36).substr(2, 9); // Random confirmation number
-        }
+        const slotImages = [
+            "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card
+            "https://iili.io/2m5ccib.jpg",  // $10 Gift Card
+            "https://iili.io/2m5lFrx.jpg",  // $50 Gift Card
+        ];
 
-        // Function to simulate slot spin and display result
+        const prizes = [
+            "$5 Gift Card",
+            "$10 Gift Card",
+            "$50 Gift Card",
+        ];
+
         function spin() {
-            // Get the player's name from the input field
-            let playerName = document.getElementById("playerName").value || "Player";  // Default to "Player" if name is not provided
+            const resultDiv = document.getElementById("result");
+            const warningDiv = document.getElementById("warning");
 
-            // Generate a confirmation number
-            let confirmationNumber = generateConfirmationNumber();
+            // Clear previous result and warnings
+            resultDiv.textContent = "";
+            warningDiv.textContent = "";
 
-            // Simulate spinning
-            document.getElementById("slot1").classList.add("spinning");
-            document.getElementById("slot2").classList.add("spinning");
-            document.getElementById("slot3").classList.add("spinning");
+            // Spin the slots
+            const slot1 = document.getElementById("slot1");
+            const slot2 = document.getElementById("slot2");
+            const slot3 = document.getElementById("slot3");
+
+            const slot1Index = Math.floor(Math.random() * slotImages.length);
+            const slot2Index = Math.floor(Math.random() * slotImages.length);
+            const slot3Index = Math.floor(Math.random() * slotImages.length);
+
+            slot1.style.transform = "rotate(1080deg)";
+            slot2.style.transform = "rotate(1080deg)";
+            slot3.style.transform = "rotate(1080deg)";
 
             setTimeout(() => {
-                // Randomly determine the winner
-                let amounts = ["$5 Gift Card", "$10 Gift Card", "$50 Gift Card"];
-                let winnings = [5, 10, 50];
-                let result = getRandomItem(winnings);
-                let winnerAmount = amounts[winnings.indexOf(result)];
+                slot1.style.transform = "";
+                slot2.style.transform = "";
+                slot3.style.transform = "";
 
-                // Display result
-                document.getElementById("result").textContent = `${playerName}, you won: ${winnerAmount}`;
+                // Assign random images
+                slot1.querySelector("img").src = slotImages[slot1Index];
+                slot2.querySelector("img").src = slotImages[slot2Index];
+                slot3.querySelector("img").src = slotImages[slot3Index];
 
-                // Send confirmation email
-                sendConfirmationEmail(playerName, confirmationNumber, winnerAmount);
+                // Check if all three slots match
+                if (slot1Index === slot2Index && slot2Index === slot3Index) {
+                    const prize = prizes[slot1Index];
+                    const confirmationNumber = "CONFIRM-" + Math.floor(Math.random() * 1000000);  // Example random confirmation number
+                    resultDiv.textContent = `Congratulations! You won a ${prize}! Confirmation Number: ${confirmationNumber}`;
 
-            }, 2000);
+                    // Add winner to the winners list
+                    const winnerName = prompt("Enter your name: "); // Get winner's name
+                    winners.push({
+                        name: winnerName,
+                        prize: prize,
+                        confirmationNumber: confirmationNumber,
+                        date: new Date().toLocaleString(),
+                    });
+
+                    // Update the winners table
+                    updateWinnersTable();
+                } else {
+                    resultDiv.textContent = "Sorry, try again!";
+                }
+            }, 2000);  // Time for spinning effect
         }
 
-        // Function to select a random item from the array
-        function getRandomItem(array) {
-            return array[Math.floor(Math.random() * array.length)];
-        }
+        function updateWinnersTable() {
+            const tableBody = document.getElementById("winnersTable").getElementsByTagName("tbody")[0];
+            tableBody.innerHTML = "";  // Clear the table body
 
-        // Function to send confirmation email via EmailJS
-        function sendConfirmationEmail(playerName, confirmationNumber, winnerAmount) {
-            var templateParams = {
-                playerName: playerName,
-                confirmationNumber: confirmationNumber,
-                winnerAmount: winnerAmount
-            };
-
-            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
-                .then(function(response) {
-                    console.log("Success:", response);
-                }, function(error) {
-                    console.log("Error:", error);
-                });
+            winners.forEach(winner => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = winner.name;
+                row.insertCell(1).textContent = winner.prize;
+                row.insertCell(2).textContent = winner.confirmationNumber;
+                row.insertCell(3).textContent = winner.date;
+            });
         }
     </script>
 
