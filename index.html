@@ -5,142 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Devoted Deals Slots</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-image: url('https://freeimghost.net/images/2025/02/14/bg.jpg');
-            background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            flex-direction: column;
-        }
-
-        .header {
-            font-size: 50px;
-            font-weight: bold;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 40px;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            animation: neonGlow 1.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes neonGlow {
-            0% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
-            50% { text-shadow: 0 0 20px #ff3399, 0 0 30px #ff3399, 0 0 40px #ff3399; }
-            100% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
-        }
-
-        .slot-container {
-            text-align: center;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 800px;
-        }
-
-        .slot-machine {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .slot {
-            width: 120px;
-            height: 120px;
-            border-radius: 10px;
-            border: 4px solid #fff;
-            overflow: hidden;
-            background: #222;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-            transition: transform 1s ease-in-out;
-        }
-
-        .slot img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .spin-button {
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #ff66b2, #ff3399);
-            color: white;
-            font-size: 18px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
-            transition: all 0.3s ease;
-        }
-
-        .spin-button:hover {
-            background: linear-gradient(135deg, #ff3385, #ff80b3);
-            transform: scale(1.1);
-        }
-
-        .result {
-            margin-top: 20px;
-            font-size: 28px;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-        }
-
-        .warning {
-            color: red;
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 15px;
-        }
-
-        /* Spin effect class */
-        .spinning {
-            animation: spin 1s ease-in-out;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(1080deg); /* 3 full rotations */
-            }
-        }
+        /* Your existing CSS code */
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <div class="header">Devoted Deals Slots</div>
+    <!-- Your HTML structure here -->
 
-    <!-- Slot Machine Container -->
-    <div class="slot-container">
-        <div class="slot-machine">
-            <div class="slot" id="slot1">
-                <img src="https://iili.io/2m5cdSp.jpg" alt="$5 Gift Card">
-            </div>
-            <div class="slot" id="slot2">
-                <img src="https://iili.io/2m5ccib.jpg" alt="$10 Gift Card">
-            </div>
-            <div class="slot" id="slot3">
-                <img src="https://iili.io/2m5lFrx.jpg" alt="$50 Gift Card">
-            </div>
-        </div>
-
-        <button class="spin-button" onclick="spin()">Spin</button>
-
-        <div class="result" id="result"></div>
-        <div class="warning" id="warning"></div>
-    </div>
-
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script>
+        emailjs.init("YOUR_USER_ID"); // Replace with your EmailJS User ID
+
         const slotImages = [
             "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card
             "https://iili.io/2m5ccib.jpg",  // $10 Gift Card
@@ -149,9 +24,6 @@
 
         let spinCount = localStorage.getItem("spinCount") ? parseInt(localStorage.getItem("spinCount")) : 0;
         const maxSpins = 3;
-
-        // Google Sheets script URL (replace with your own)
-        const googleSheetsURL = 'https://script.google.com/macros/s/AKfycbwohCvT1GGGlUZRgrriFl7h_UVztADtAGGOZvPHsPoWxFUH5mMMFpiODNykuh06h0cTOw/exec';
 
         function getRandomImage() {
             return slotImages[Math.floor(Math.random() * slotImages.length)];
@@ -167,28 +39,18 @@
             let slot2 = document.getElementById('slot2');
             let slot3 = document.getElementById('slot3');
 
-            // Add some temporary image to start the spin
+            // Spin effect
             slot1.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
             slot2.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
             slot3.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
 
-            // Reset and apply spin effect every time
-            slot1.classList.remove('spinning');
-            slot2.classList.remove('spinning');
-            slot3.classList.remove('spinning');
-
-            // Trigger the spin effect
-            setTimeout(() => {
-                slot1.classList.add('spinning');
-                slot2.classList.add('spinning');
-                slot3.classList.add('spinning');
-            }, 10);
-
-            spinCount++;
-            localStorage.setItem("spinCount", spinCount); // Store updated spin count
+            // Add spin animation classes
             setTimeout(() => {
                 checkResult();
             }, 1000); // Wait for 1 second before checking result
+
+            spinCount++;
+            localStorage.setItem("spinCount", spinCount); // Store updated spin count
         }
 
         function checkResult() {
@@ -198,10 +60,13 @@
 
             if (slot1 === slot2 && slot2 === slot3) {
                 let confirmationNumber = generateConfirmationNumber();
-                document.getElementById('result').innerHTML = "<span class='neon-text'>You Win!</span> Confirmation Number: " + confirmationNumber;
-                sendToGoogleSheets(confirmationNumber, slot1);
+                let prize = slot1.includes('2m5cdSp') ? "5" : slot1.includes('2m5ccib') ? "10" : "50";
+                
+                document.getElementById('result').innerHTML = "You Win! Confirmation Number: " + confirmationNumber;
+
+                sendEmail(confirmationNumber, prize); // Send the email to you with the details
             } else {
-                document.getElementById('result').innerHTML = "<span class='neon-text'>Try Again!</span>";
+                document.getElementById('result').innerHTML = "Try Again!";
             }
         }
 
@@ -209,32 +74,21 @@
             return Math.floor(Math.random() * 1000000);  // Random confirmation number between 0 and 999999
         }
 
-        function sendToGoogleSheets(confirmationNumber, prizeImage) {
-            let prize = prizeImage.includes('2m5cdSp') ? "5" : prizeImage.includes('2m5ccib') ? "10" : "50";
-            let data = {
-                confirmationNumber: confirmationNumber,
-                timestamp: new Date().toISOString(),
-                spinCount: spinCount,
+        function sendEmail(confirmationNumber, prize) {
+            // Replace 'YOUR_TEMPLATE_ID' with your EmailJS Template ID
+            const templateParams = {
+                confirmation_number: confirmationNumber,
                 prize: prize
             };
 
-            fetch(googleSheetsURL, {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json' 
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.text())
-            .then(responseData => {
-                console.log('Data sent successfully:', responseData);
-            })
-            .catch(error => {
-                console.error('Error sending data:', error);
-            });
+            emailjs.send("YOUR_SERVICE_ID", "template_yru4mx7", templateParams)  // Use your actual service ID here
+                .then(function(response) {
+                    console.log("Email sent successfully!", response);
+                }, function(error) {
+                    console.log("Error sending email:", error);
+                });
         }
     </script>
+
 </body>
 </html>
-
-     
