@@ -100,7 +100,6 @@
             margin-top: 15px;
         }
 
-        /* Spin effect class */
         .spinning {
             animation: spin 1s ease-in-out;
         }
@@ -110,28 +109,20 @@
                 transform: rotate(0deg);
             }
             100% {
-                transform: rotate(1080deg); /* 3 full rotations */
+                transform: rotate(1080deg);
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
     <div class="header">Devoted Deals Slots</div>
 
-    <!-- Slot Machine Container -->
     <div class="slot-container">
         <div class="slot-machine">
-            <div class="slot" id="slot1">
-                <img src="https://iili.io/2m5cdSp.jpg" alt="$5 Gift Card">
-            </div>
-            <div class="slot" id="slot2">
-                <img src="https://iili.io/2m5cdSp.jpg" alt="$5 Gift Card">
-            </div>
-            <div class="slot" id="slot3">
-                <img src="https://iili.io/2m5cdSp.jpg" alt="$5 Gift Card">
-            </div>
+            <div class="slot" id="slot1"></div>
+            <div class="slot" id="slot2"></div>
+            <div class="slot" id="slot3"></div>
         </div>
 
         <button class="spin-button" onclick="spin()">Spin</button>
@@ -140,82 +131,69 @@
         <div class="warning" id="warning"></div>
     </div>
 
-    <!-- EmailJS Script -->
-    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 
     <script>
-        // Initialize EmailJS with your user ID
-        emailjs.init("YOUR_USER_ID"); // Replace with your actual EmailJS User ID
+        emailjs.init("YOUR_USER_ID");  // Replace with your EmailJS User ID
 
-        // Track the number of spins, wins, and winners
         let spinCount = parseInt(localStorage.getItem('spinCount')) || 0;
         let dailyWin = localStorage.getItem('dailyWin') === 'true' ? true : false;
         let winnersThisMonth = parseInt(localStorage.getItem('winnersThisMonth')) || 0;
         const maxSpins = 5;
         const maxWinners = 20;
-        const dailyLimitMessage = "You've reached your spin limit for today. Please come back tomorrow!";
-        const prizeAmount = 5; // Only $5 prize
+        const prizeAmount = 5;
 
-        // Prize details (only $5 prize will be won)
         const slotImages = [
-            "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card (only this one will be shown)
+            "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card
         ];
 
-        // Function to disable the spin button if the player has reached their limit
         function checkSpinLimit() {
             if (spinCount >= maxSpins) {
                 document.querySelector('.spin-button').disabled = true;
-                document.getElementById('result').textContent = dailyLimitMessage;
+                document.getElementById('result').textContent = "You've reached your spin limit for today. Please come back tomorrow!";
             } else {
                 document.querySelector('.spin-button').disabled = false;
             }
         }
 
-        // Function to handle the spin action
         function spin() {
-            // Check if the user has already won today
             if (dailyWin) {
                 alert("You've already won today! Please come back tomorrow.");
                 return;
             }
 
-            // Simulate the spin (always show 3 $5 cards for a win)
-            const winningImage = slotImages[0]; // Always show $5 card for all three slots
+            if (winnersThisMonth >= maxWinners) {
+                document.getElementById('result').textContent = "Sorry, no more winners this month!";
+                return;
+            }
+
+            const winningImage = slotImages[0]; // Always show $5 gift card for all three slots
             document.getElementById('slot1').innerHTML = `<img src="${winningImage}" alt="$5 Gift Card">`;
             document.getElementById('slot2').innerHTML = `<img src="${winningImage}" alt="$5 Gift Card">`;
             document.getElementById('slot3').innerHTML = `<img src="${winningImage}" alt="$5 Gift Card">`;
 
-            // Handle winning logic (always $5)
-            if (winnersThisMonth < maxWinners) {
-                // Update the number of winners this month
-                winnersThisMonth++;
-                localStorage.setItem('winnersThisMonth', winnersThisMonth);
+            winnersThisMonth++;
+            localStorage.setItem('winnersThisMonth', winnersThisMonth);
 
-                // Mark that the player has won today
-                dailyWin = true;
-                localStorage.setItem('dailyWin', 'true');
+            dailyWin = true;
+            localStorage.setItem('dailyWin', 'true');
 
-                // Send email with confirmation number, name, and prize amount
-                sendWinnerEmail();
-                document.getElementById('result').textContent = `Congratulations! You won a $${prizeAmount} gift card!`;
-            } else {
-                document.getElementById('result').textContent = "Sorry, no more winners this month!";
-            }
+            sendWinnerEmail();
 
-            // Update spin count and check limits
+            document.getElementById('result').textContent = `Congratulations! You won a $${prizeAmount} gift card!`;
+
             spinCount++;
             localStorage.setItem('spinCount', spinCount);
             checkSpinLimit();
         }
 
-        // Function to send winner email (you can also store the information in a database or log it in local storage)
         function sendWinnerEmail() {
-            const confirmationNumber = 'CONFIRMATION_NUMBER_' + Math.floor(Math.random() * 10000); // Random confirmation number for testing
-            const playerName = prompt("Enter your name"); // You could also store this or gather it via form
+            const confirmationNumber = 'CONFIRMATION_' + Math.floor(Math.random() * 10000);
+            const playerName = prompt("Enter your name");
             const message = {
-                service_id: 'service_9uor8xn', // Replace with your EmailJS service ID
-                template_id: 'template_yru4mx7', // Replace with your EmailJS template ID
-                user_id: 'YOUR_USER_ID', // Replace with your EmailJS user ID
+                service_id: 'service_9uor8xn',
+                template_id: 'template_yru4mx7',
+                user_id: 'YOUR_USER_ID',
                 template_params: {
                     confirmation_number: confirmationNumber,
                     player_name: playerName,
@@ -231,16 +209,14 @@
                 });
         }
 
-        // Reset spin count and win status at midnight
         setInterval(() => {
             const now = new Date();
             if (now.getHours() === 0 && now.getMinutes() === 0) {
                 localStorage.removeItem('spinCount');
                 localStorage.removeItem('dailyWin');
             }
-        }, 60000); // Check every minute
+        }, 60000);
 
-        // Initialize page state
         checkSpinLimit();
     </script>
 </body>
