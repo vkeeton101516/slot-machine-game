@@ -165,6 +165,7 @@
         let spinsToday = 0;
         const maxSpinsPerDay = 5;
         const winnersList = [];
+        const playerName = "Player"; // You can modify this to be dynamic
 
         // To keep track of spins and winners in localStorage
         function loadGameState() {
@@ -234,10 +235,16 @@
 
                 // Display winner information
                 const winner = {
-                    name: "Player", // Replace with the actual player's name
+                    name: playerName,
                     prize: "$5 Gift Card",
                     date: new Date().toLocaleString()
                 };
+
+                // Check if the player has already won today
+                if (winnersList.some(w => w.name === playerName && new Date(w.date).toDateString() === new Date().toDateString())) {
+                    document.getElementById("warning").innerText = "You have already won today!";
+                    return;
+                }
 
                 winnersList.push(winner);
                 localStorage.setItem("winnersList", JSON.stringify(winnersList));
@@ -258,5 +265,3 @@
 
 </body>
 </html>
-
-     
