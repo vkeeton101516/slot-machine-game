@@ -148,7 +148,7 @@
         ];
 
         let spinCount = localStorage.getItem("spinCount") ? parseInt(localStorage.getItem("spinCount")) : 0;
-        const maxSpins = 50;
+        const maxSpins = 3;
 
         // Google Sheets script URL (replace with your own)
         const googleSheetsURL = 'https://script.google.com/macros/s/AKfycbwohCvT1GGGlUZRgrriFl7h_UVztADtAGGOZvPHsPoWxFUH5mMMFpiODNykuh06h0cTOw/exec';
@@ -218,7 +218,7 @@
                 prize: prize
             };
 
-            fetch('https://script.google.com/macros/s/AKfycbwohCvT1GGGlUZRgrriFl7h_UVztADtAGGOZvPHsPoWxFUH5mMMFpiODNykuh06h0cTOw/exec', {
+            fetch(googleSheetsURL, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json' 
@@ -233,4 +233,8 @@
                 console.error('Error sending data:', error);
             });
         }
-   
+    </script>
+</body>
+</html>
+
+     
