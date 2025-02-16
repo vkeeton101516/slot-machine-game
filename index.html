@@ -68,197 +68,70 @@
             height: 100%;
             object-fit: cover;
         }
-
-        .spin-button {
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #ff66b2, #ff3399);
-            color: white;
-            font-size: 18px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
-            transition: all 0.3s ease;
-        }
-
-        .spin-button:hover {
-            background: linear-gradient(135deg, #ff3385, #ff80b3);
-            transform: scale(1.1);
-        }
-
-        .result {
-            margin-top: 20px;
-            font-size: 28px;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-        }
-
-        .winner-info {
-            margin-top: 20px;
-            font-size: 20px;
-            color: #fff;
-            text-align: left;
-        }
-
-        .warning {
-            color: red;
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 15px;
-        }
-
-        .spinning {
-            animation: spin 1s ease-in-out;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(1080deg); /* 3 full rotations */
-            }
-        }
     </style>
 </head>
 <body>
-
     <div class="header">Devoted Deals Slots</div>
-
     <div class="slot-container">
         <div class="slot-machine">
-            <div class="slot" id="slot1">
-                <img src="https://iili.io/2m5cdSp.jpg" alt="$5 Gift Card">
-            </div>
-            <div class="slot" id="slot2">
-                <img src="https://iili.io/2m5ccib.jpg" alt="$10 Gift Card">
-            </div>
-            <div class="slot" id="slot3">
-                <img src="https://iili.io/2m5lFrx.jpg" alt="$50 Gift Card">
-            </div>
+            <div class="slot" id="slot1"><img src="https://iili.io/2m5cdSp.jpg" alt="$5 Gift Card"></div>
+            <div class="slot" id="slot2"><img src="https://iili.io/2m5ccib.jpg" alt="$10 Gift Card"></div>
+            <div class="slot" id="slot3"><img src="https://iili.io/2m5lFrx.jpg" alt="$50 Gift Card"></div>
         </div>
-
         <button class="spin-button" onclick="spin()">Spin</button>
-
         <div class="result" id="result"></div>
         <div class="warning" id="warning"></div>
         <div class="winner-info" id="winnerInfo"></div>
     </div>
 
-    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
-
     <script>
-        emailjs.init("YOUR_USER_ID"); // Replace with your actual EmailJS User ID
-
-        const slotImages = [
-            "https://iili.io/2m5cdSp.jpg", // $5 Gift Card
-            "https://iili.io/2m5ccib.jpg", // $10 Gift Card
-            "https://iili.io/2m5lFrx.jpg"  // $50 Gift Card
+        const confirmationNumbers = [
+            "45875664", "58761232", "87653099", "14589736", "01589536",
+            "25796864", "28658901", "02040587", "32158964", "38561515",
+            "71456611", "82547125", "94585477", "05161983", "02262007",
+            "09232009", "04586652", "17565211", "25893455", "24751855"
         ];
-
+        let assignedNumbers = [];
         let spinsToday = 0;
         const maxSpinsPerDay = 5;
         const winnersList = [];
-        const playerName = "Player"; // You can modify this to be dynamic
-
-        // Load saved game state
-        function loadGameState() {
-            const savedSpins = localStorage.getItem("spinsToday");
-            spinsToday = savedSpins ? parseInt(savedSpins) : 0;
-
-            const savedWinners = localStorage.getItem("winnersList");
-            if (savedWinners) {
-                winnersList.push(...JSON.parse(savedWinners));
-                displayWinners();
-            }
-        }
-
-        // Reset spin count at midnight
-        function resetSpins() {
-            const now = new Date();
-            const lastReset = localStorage.getItem("lastResetDate");
-
-            if (lastReset !== now.toDateString()) {
-                spinsToday = 0;
-                localStorage.setItem("spinsToday", spinsToday);
-                localStorage.setItem("lastResetDate", now.toDateString());
-            }
-        }
-
-        // Display winners
-        function displayWinners() {
-            const winnerInfo = document.getElementById("winnerInfo");
-            winnerInfo.innerHTML = winnersList.map(winner => {
-                return `<p>${winner.name} won a $5 Gift Card on ${winner.date}</p>`;
-            }).join("");
-        }
 
         function spin() {
-            resetSpins();
             if (spinsToday >= maxSpinsPerDay) {
                 document.getElementById("warning").innerText = "You've reached your spin limit for today!";
                 return;
             }
-
             spinsToday++;
-            localStorage.setItem("spinsToday", spinsToday);
             document.getElementById("warning").innerText = "";
 
-            // Spin animation
-            const slots = document.querySelectorAll(".slot img");
-            slots.forEach(slot => {
-                slot.parentElement.classList.add("spinning");
-            });
+            const slotImages = ["https://iili.io/2m5cdSp.jpg", "https://iili.io/2m5ccib.jpg", "https://iili.io/2m5lFrx.jpg"];
+            const randomImages = [
+                slotImages[Math.floor(Math.random() * slotImages.length)], 
+                slotImages[Math.floor(Math.random() * slotImages.length)], 
+                slotImages[Math.floor(Math.random() * slotImages.length)]
+            ];
 
-            setTimeout(() => {
-                // Stop spinning animation
-                slots.forEach(slot => {
-                    slot.parentElement.classList.remove("spinning");
-                });
+            document.getElementById("slot1").querySelector("img").src = randomImages[0];
+            document.getElementById("slot2").querySelector("img").src = randomImages[1];
+            document.getElementById("slot3").querySelector("img").src = randomImages[2];
 
-                // Randomly pick a prize for each slot
-                const randomImages = [
-                    slotImages[Math.floor(Math.random() * slotImages.length)], 
-                    slotImages[Math.floor(Math.random() * slotImages.length)], 
-                    slotImages[Math.floor(Math.random() * slotImages.length)]
-                ];
-
-                document.getElementById("slot1").querySelector("img").src = randomImages[0];
-                document.getElementById("slot2").querySelector("img").src = randomImages[1];
-                document.getElementById("slot3").querySelector("img").src = randomImages[2];
-
-                // Check if it's a winning combination (only $5)
-                if (randomImages[0] === slotImages[0] && randomImages[1] === slotImages[0] && randomImages[2] === slotImages[0]) {
-                    // Save the winner info
-                    const winner = {
-                        name: playerName,
-                        prize: "$5 Gift Card",
-                        date: new Date().toLocaleString()
-                    };
-
-                    winnersList.push(winner);
-                    localStorage.setItem("winnersList", JSON.stringify(winnersList));
-
-                    // Display winner info
-                    displayWinners();
-                }
-
-                // Prevent multiple wins per day
-                if (winnersList.some(w => w.name === playerName && new Date(w.date).toDateString() === new Date().toDateString())) {
-                    document.getElementById("warning").innerText = "You have already won today!";
+            if (randomImages.every(img => img === slotImages[0])) {
+                if (winnersList.length >= 20) {
+                    document.getElementById("warning").innerText = "Winner limit reached for this month.";
                     return;
                 }
 
-                // Enforce the winner limit for the month
-                if (winnersList.length > 20) {
-                    document.getElementById("warning").innerText = "Winner limit reached for this month.";
+                const availableNumbers = confirmationNumbers.filter(num => !assignedNumbers.includes(num));
+                if (availableNumbers.length > 0) {
+                    const assignedNumber = availableNumbers[0];
+                    assignedNumbers.push(assignedNumber);
+                    winnersList.push({ number: assignedNumber });
+                    document.getElementById("result").innerText = "Congratulations! Your confirmation number: " + assignedNumber;
+                } else {
+                    document.getElementById("warning").innerText = "No more confirmation numbers available.";
                 }
-            }, 1000);
+            }
         }
-
-        // Load the game state on page load
-        window.onload = loadGameState;
     </script>
-
 </body>
 </html>
