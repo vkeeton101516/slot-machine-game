@@ -60,46 +60,9 @@ function spin() {
         localStorage.setItem('spinCount', spinCount);
 
         // Store used confirmation numbers
+        let usedConfirmationNumbers = JSON.parse(localStorage.getItem("usedConfirmationNumbers")) || [];
         usedConfirmationNumbers.push(winnerConfirmationNumber);
         localStorage.setItem("usedConfirmationNumbers", JSON.stringify(usedConfirmationNumbers));
-    } else {
-        document.getElementById('result').textContent = "Sorry, no more winners this month!";
-    }
-
-    // Update spin count and check limits
-    checkSpinLimit();
-}
-Sent
-
-
-
-    }
-
-    // Ensure the results show only $5 cards for all three slots (no $10 or $50)
-    const winningImage = slotImages[0]; // Always show $5 card for all three slots
-    document.getElementById('slot1').innerHTML = <img src="${winningImage}" alt="$5 Gift Card">;
-    document.getElementById('slot2').innerHTML = <img src="${winningImage}" alt="$5 Gift Card">;
-    document.getElementById('slot3').innerHTML = <img src="${winningImage}" alt="$5 Gift Card">;
-
-    // Increment the spin count
-    spinCount++;
-    localStorage.setItem("spinCount", spinCount);
-
-    // Handle winning logic (always $5)
-    if (winnersThisMonth < maxWinners) {
-        // Get the confirmation number for this spin
-        const winnerConfirmation = confirmationNumbers[winnersThisMonth];
-        
-        // Increment winners for the month
-        winnersThisMonth++;
-        localStorage.setItem('winnersThisMonth', winnersThisMonth);
-
-        // Mark that the player has won today
-        dailyWin = true;
-        localStorage.setItem('dailyWin', 'true');
-
-        // Update the result display
-        document.getElementById('result').textContent = Congratulations! You won a $${prizeAmount} gift card! Your confirmation number is: ${winnerConfirmation};
     } else {
         document.getElementById('result').textContent = "Sorry, no more winners this month!";
     }
