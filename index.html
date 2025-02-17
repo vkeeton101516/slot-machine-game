@@ -49,11 +49,13 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
     }
     .slot img {
       max-width: 100%;
       max-height: 100%;
-      object-fit: contain; /* Makes sure images fit inside the slots */
+      object-fit: contain;
+      transition: transform 1s ease;
     }
     .result {
       margin-top: 20px;
@@ -126,13 +128,21 @@
       let slot2 = document.getElementById('slot2');
       let slot3 = document.getElementById('slot3');
 
-      slot1.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
-      slot2.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
-      slot3.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
+      // Apply a quick spinning effect
+      slot1.querySelector('img').style.transform = "rotate(360deg)";
+      slot2.querySelector('img').style.transform = "rotate(360deg)";
+      slot3.querySelector('img').style.transform = "rotate(360deg)";
 
       // After 1 second check the result
       setTimeout(() => {
-        checkResult();
+        // Reset the images to simulate spinning for a bit before final results
+        slot1.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
+        slot2.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
+        slot3.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
+
+        setTimeout(() => {
+          checkResult();
+        }, 1000);
       }, 1000);
     }
 
@@ -155,9 +165,3 @@
         }
       } else {
         document.getElementById('result').textContent = "Try Again!";
-        document.getElementById('confirmation-number').textContent = "";
-      }
-    }
-  </script>
-</body>
-</html>
