@@ -41,9 +41,9 @@ function spin() {
     const winningImage = slotImages[0]; // Always show $5 card for all three slots
 
     // Set the image using JavaScript in a more reliable way
-    document.getElementById('slot1').style.backgroundImage = url('${winningImage}');
-    document.getElementById('slot2').style.backgroundImage = url('${winningImage}');
-    document.getElementById('slot3').style.backgroundImage = url('${winningImage}');
+    document.getElementById('slot1').innerHTML = <img src="${winningImage}" alt="$5 Gift Card" class="slot-image">;
+    document.getElementById('slot2').innerHTML = <img src="${winningImage}" alt="$5 Gift Card" class="slot-image">;
+    document.getElementById('slot3').innerHTML = <img src="${winningImage}" alt="$5 Gift Card" class="slot-image">;
 
     // Handle winning logic (always $5)
     if (winnersThisMonth < maxWinners) {
