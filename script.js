@@ -33,8 +33,46 @@ function checkSpinLimit() {
 // Function to handle the spin action
 function spin() {
     if (spinCount >= maxSpins) {
-        document.getElementById('warning').textContent = "You have reached the spin limit!";
+        document.getElementById('warning').textContent = "You have reached the weekly spin limit!";
         return;
+    }
+
+    // Simulate the spin (always show 3 $5 cards for a win)
+    const winningImage = slotImages[0]; // Always show $5 card for all three slots
+
+    // Set the image using JavaScript in a more reliable way
+    document.getElementById('slot1').style.backgroundImage = url('${winningImage}');
+    document.getElementById('slot2').style.backgroundImage = url('${winningImage}');
+    document.getElementById('slot3').style.backgroundImage = url('${winningImage}');
+
+    // Handle winning logic (always $5)
+    if (winnersThisMonth < maxWinners) {
+        winnersThisMonth++;
+        localStorage.setItem('winnersThisMonth', winnersThisMonth);
+
+        const winnerIndex = winnersThisMonth - 1;
+        const winnerConfirmationNumber = confirmationNumbers[winnerIndex];
+
+        document.getElementById('result').textContent = Congratulations! You won a $5 gift card! Your confirmation number is: ${winnerConfirmationNumber};
+
+        // Increment spin count
+        spinCount++;
+        localStorage.setItem('spinCount', spinCount);
+
+        // Store used confirmation numbers
+        usedConfirmationNumbers.push(winnerConfirmationNumber);
+        localStorage.setItem("usedConfirmationNumbers", JSON.stringify(usedConfirmationNumbers));
+    } else {
+        document.getElementById('result').textContent = "Sorry, no more winners this month!";
+    }
+
+    // Update spin count and check limits
+    checkSpinLimit();
+}
+Sent
+
+
+
     }
 
     // Ensure the results show only $5 cards for all three slots (no $10 or $50)
