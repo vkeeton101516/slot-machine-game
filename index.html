@@ -95,12 +95,14 @@
   </div>
 
   <script>
+    // Define images for the slots
     const slotImages = [
       "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card
       "https://iili.io/2m5ccib.jpg",  // $10 Gift Card
       "https://iili.io/2m5lFrx.jpg"   // $50 Gift Card
     ];
 
+    // List of pre-chosen confirmation numbers
     const confirmationNumbers = [
       45875664, 58761232, 87653099, 14589736, 1589536, 
       25796864, 28658901, 2040587, 32158964, 38561515, 
@@ -110,60 +112,49 @@
 
     let winners = [];
 
+    // Event listener for spin button click
     document.getElementById("spin-button").addEventListener("click", spin);
 
+    // Spin function
     function spin() {
       console.log("Spinning the slot machine!");
       document.getElementById('result').textContent = "Spinning...";
 
-      // Get elements for the slots
+      // Get the slot elements
       const slot1 = document.getElementById('slot1');
       const slot2 = document.getElementById('slot2');
       const slot3 = document.getElementById('slot3');
 
-      // Add spinning animation
-      slot1.querySelector('img').style.transform = "rotate(360deg)";
-      slot2.querySelector('img').style.transform = "rotate(360deg)";
-      slot3.querySelector('img').style.transform = "rotate(360deg)";
+      // Reset the rotation animation before each spin
+      slot1.querySelector('img').style.transition = "none";
+      slot2.querySelector('img').style.transition = "none";
+      slot3.querySelector('img').style.transition = "none";
 
-      // Simulate the spinning effect
+      // Reset the image sources before each spin to restart the animation
+      slot1.querySelector('img').style.transform = "rotate(0deg)";
+      slot2.querySelector('img').style.transform = "rotate(0deg)";
+      slot3.querySelector('img').style.transform = "rotate(0deg)";
+
+      // Allow the browser to render the reset before starting the spin animation
       setTimeout(() => {
-        slot1.querySelector('img').src = getRandomImage();
-        slot2.querySelector('img').src = getRandomImage();
-        slot3.querySelector('img').src = getRandomImage();
+        slot1.querySelector('img').style.transition = "transform 1s ease";
+        slot2.querySelector('img').style.transition = "transform 1s ease";
+        slot3.querySelector('img').style.transition = "transform 1s ease";
 
+        // Start the spinning effect (rotate)
+        slot1.querySelector('img').style.transform = "rotate(360deg)";
+        slot2.querySelector('img').style.transform = "rotate(360deg)";
+        slot3.querySelector('img').style.transform = "rotate(360deg)";
+
+        // Simulate the spinning effect by changing the images after 1 second
         setTimeout(() => {
-          checkResult();
-        }, 1000);  // Wait 1 second before checking results
-      }, 1000);  // Simulate spin duration
-    }
+          slot1.querySelector('img').src = getRandomImage();
+          slot2.querySelector('img').src = getRandomImage();
+          slot3.querySelector('img').src = getRandomImage();
 
-    function getRandomImage() {
-      return slotImages[Math.floor(Math.random() * slotImages.length)];
-    }
-
-    function checkResult() {
-      let slot1 = document.getElementById('slot1').querySelector('img').src;
-      let slot2 = document.getElementById('slot2').querySelector('img').src;
-      let slot3 = document.getElementById('slot3').querySelector('img').src;
-
-      if (slot1 === slot2 && slot2 === slot3 && slot1.includes("2m5cdSp")) {
-        // Winner! Display the confirmation number
-        let confirmationNumber = confirmationNumbers[winners.length];
-        winners.push(confirmationNumber);
-
-        document.getElementById('result').textContent = "You win!";
-        document.getElementById('confirmation-number').textContent = 
-          "Confirmation Number: " + confirmationNumber;
-
-        if (winners.length >= 20) {
-          alert("The 20 winners have been selected.");
-        }
-      } else {
-        document.getElementById('result').textContent = "Try Again!";
-        document.getElementById('confirmation-number').textContent = "";
-      }
-    }
-  </script>
-</body>
-</html>
+          // Check result after 1 second
+          setTimeout(() => {
+            checkResult();
+          }, 1000);  // Wait 1 second before checking results
+        }, 1000);  // Simulate 1 second of spinning duration
+      }, 10); // A small
