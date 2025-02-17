@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: url('https://iili.io/2m5cdSp.jpg') no-repeat center center fixed;
+      background: url('https://freeimghost.net/images/2025/02/14/bg.jpg') no-repeat center center fixed;
       background-size: cover;
       color: white;
       display: flex;
@@ -85,81 +85,79 @@
       </div>
     </div>
 
-    <!-- Spin button -->
     <button onclick="spin()">Spin</button>
 
-    <!-- Result display -->
     <div class="result" id="result"></div>
     <div class="confirmation-number" id="confirmation-number"></div>
   </div>
 
   <script>
-    // Images for the slots
     const slotImages = [
-      "https://iili.io/2m5cdSp.jpg", // $5 Gift Card
-      "https://iili.io/2m5ccib.jpg", // $10 Gift Card
-      "https://iili.io/2m5lFrx.jpg"  // $50 Gift Card
+      "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card
+      "https://iili.io/2m5ccib.jpg",  // $10 Gift Card
+      "https://iili.io/2m5lFrx.jpg"   // $50 Gift Card
     ];
 
-    // Confirmation numbers (20 winners in total)
     const confirmationNumbers = [
-      "45875664", "58761232", "87653099", "14589736", "01589536", 
-      "25796864", "28658901", "02040587", "32158964", "38561515", 
-      "71456611", "82547125", "94585477", "05161983", "02262007", 
-      "09232009", "04586652", "17565211", "25893455", "24751855"
+      45875664, 58761232, 87653099, 14589736, 1589536, 
+      25796864, 28658901, 2040587, 32158964, 38561515, 
+      71456611, 82547125, 94585477, 5161983, 2262007, 
+      9232009, 4586652, 17565211, 25893455, 24751855
     ];
 
+    let winners = [];
     let spinCount = 0;
-    const maxSpins = 5;
-    let winnersThisMonth = []; // Array to track winners
-    const totalWinners = 20; // Total winners in a month
-    const maxWeeklyWinners = 5; // Max winners per week
 
-    // Spin function
-    function spin() {
-      if (spinCount >= maxSpins) {
-        alert("You have reached the maximum number of spins for today.");
-        return;
-      }
-
-      // Reset result display
-      document.getElementById("result").innerHTML = "";
-      document.getElementById("confirmation-number").innerHTML = "";
-
-      // Spin the slots
-      const slot1 = document.getElementById("slot1");
-      const slot2 = document.getElementById("slot2");
-      const slot3 = document.getElementById("slot3");
-
-      // Randomly pick images for each slot
-      const randomImage1 = getRandomImage();
-      const randomImage2 = getRandomImage();
-      const randomImage3 = getRandomImage();
-
-      slot1.innerHTML = <img src="${randomImage1}" alt="Slot 1" />;
-      slot2.innerHTML = <img src="${randomImage2}" alt="Slot 2" />;
-      slot3.innerHTML = <img src="${randomImage3}" alt="Slot 3" />;
-
-      // Increment spin count
-      spinCount++;
-
-      // Check for winner
-      setTimeout(() => {
-        checkWinner(randomImage1, randomImage2, randomImage3);
-      }, 1000); // Delay to allow images to show before checking
-    }
-
-    // Get a random slot image (from available images)
     function getRandomImage() {
       return slotImages[Math.floor(Math.random() * slotImages.length)];
     }
 
-    // Check if the player wins
-    function checkWinner(img1, img2, img3) {
-      if (img1 === img2 && img2 === img3 && img1 === slotImages[0]) {
-        // If all three slots match and are the $5 symbol
-        if (winnersThisMonth.length < totalWinners) {
-          // Check if we have already reached the max winners
-          const confirmationNumber = getConfirmationNumber();
-          winnersThisMonth.push(confirmationNumber); // Add winner to the list
-          document.getElementById("result").innerHTML = "You win!"
+    function spin() {
+      if (spinCount >= 10) {
+        alert("You have reached the daily spin limit!");
+        return;
+      }
+
+      // Start spinning the slots
+      spinCount++;
+      document.getElementById('result').textContent = "Spinning...";
+
+      let slot1 = document.getElementById('slot1');
+      let slot2 = document.getElementById('slot2');
+      let slot3 = document.getElementById('slot3');
+
+      slot1.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
+      slot2.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
+      slot3.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
+
+      // After 1 second check the result
+      setTimeout(() => {
+        checkResult();
+      }, 1000);
+    }
+
+    function checkResult() {
+      let slot1 = document.getElementById('slot1').querySelector('img').src;
+      let slot2 = document.getElementById('slot2').querySelector('img').src;
+      let slot3 = document.getElementById('slot3').querySelector('img').src;
+
+      if (slot1 === slot2 && slot2 === slot3 && slot1.includes("2m5cdSp")) {
+        // Winner! Display the confirmation number
+        let confirmationNumber = confirmationNumbers[winners.length];
+        winners.push(confirmationNumber);
+
+        document.getElementById('result').textContent = "You win!";
+        document.getElementById('confirmation-number').textContent = 
+          "Confirmation Number: " + confirmationNumber;
+
+        if (winners.length >= 20) {
+          alert("The 20 winners have been selected.");
+        }
+      } else {
+        document.getElementById('result').textContent = "Try Again!";
+        document.getElementById('confirmation-number').textContent = "";
+      }
+    }
+  </script>
+</body>
+</html>
