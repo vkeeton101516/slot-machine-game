@@ -88,7 +88,7 @@
       </div>
     </div>
 
-    <button onclick="spin()">Spin</button>
+    <button id="spin-button">Spin</button>
 
     <div class="result" id="result"></div>
     <div class="confirmation-number" id="confirmation-number"></div>
@@ -109,47 +109,39 @@
     ];
 
     let winners = [];
-    let spinCount = 0;
 
-    // Spin function
+    document.getElementById("spin-button").addEventListener("click", spin);
+
     function spin() {
-      if (spinCount >= 10) {
-        alert("You have reached the daily spin limit!");
-        return;
-      }
-
-      // Start spinning the slots
-      spinCount++;
+      console.log("Spinning the slot machine!");
       document.getElementById('result').textContent = "Spinning...";
 
-      let slot1 = document.getElementById('slot1');
-      let slot2 = document.getElementById('slot2');
-      let slot3 = document.getElementById('slot3');
+      // Get elements for the slots
+      const slot1 = document.getElementById('slot1');
+      const slot2 = document.getElementById('slot2');
+      const slot3 = document.getElementById('slot3');
 
-      // Apply quick spinning animation
+      // Add spinning animation
       slot1.querySelector('img').style.transform = "rotate(360deg)";
       slot2.querySelector('img').style.transform = "rotate(360deg)";
       slot3.querySelector('img').style.transform = "rotate(360deg)";
 
-      // After 1 second, check the result
+      // Simulate the spinning effect
       setTimeout(() => {
-        // Reset the images to simulate spinning for a moment
-        slot1.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
-        slot2.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
-        slot3.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
+        slot1.querySelector('img').src = getRandomImage();
+        slot2.querySelector('img').src = getRandomImage();
+        slot3.querySelector('img').src = getRandomImage();
 
         setTimeout(() => {
           checkResult();
-        }, 1000);
-      }, 1000);
+        }, 1000);  // Wait 1 second before checking results
+      }, 1000);  // Simulate spin duration
     }
 
-    // Helper function to get a random slot image
     function getRandomImage() {
       return slotImages[Math.floor(Math.random() * slotImages.length)];
     }
 
-    // Check if the result is a win
     function checkResult() {
       let slot1 = document.getElementById('slot1').querySelector('img').src;
       let slot2 = document.getElementById('slot2').querySelector('img').src;
@@ -168,4 +160,10 @@
           alert("The 20 winners have been selected.");
         }
       } else {
-        doc
+        document.getElementById('result').textContent = "Try Again!";
+        document.getElementById('confirmation-number').textContent = "";
+      }
+    }
+  </script>
+</body>
+</html>
