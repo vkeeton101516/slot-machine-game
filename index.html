@@ -206,7 +206,7 @@
             let slot2 = document.getElementById('slot2').querySelector('img').src;
             let slot3 = document.getElementById('slot3').querySelector('img').src;
 
-            // Ensure only $5 gift cards can win (3 of the same $5 symbol)
+            // Ensure that only $5 gift cards can win (3 of the same $5 symbol)
             if (slot1 === slot2 && slot2 === slot3 && slot1.includes('2m5cdSp')) {
                 if (currentWinnerIndex < maxWinsPerMonth) {
                     let confirmationNumber = confirmationNumbers[currentWinnerIndex];
@@ -218,8 +218,10 @@
                 }
             } else {
                 // Prevent $10 or $50 symbols from appearing 3 times in all 3 slots
-                if (slot1.includes('2m5ccib') && slot2.includes('2m5ccib') && slot3.includes('2m5ccib') ||
-                    slot1.includes('2m5lFrx') && slot2.includes('2m5lFrx') && slot3.includes('2m5lFrx')) {
+                let allSymbols = [slot1, slot2, slot3];
+                let isThreeOfSame = (symbol) => allSymbols.filter(img => img.includes(symbol)).length === 3;
+
+                if (isThreeOfSame('2m5ccib') || isThreeOfSame('2m5lFrx')) {
                     document.getElementById('result').innerHTML = "<span class='neon-text'>Try Again!</span>";
                 } else {
                     document.getElementById('result').innerHTML = "<span class='neon-text'>Try Again!</span>";
