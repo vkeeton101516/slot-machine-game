@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Devoted Deals Slots</title>
-    <link rel="stylesheet" href="style.css"> <!-- Link to your external CSS file -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -23,13 +23,13 @@
 
     <script>
         const slotImages = [
-            "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg", // Cherry
-            "https://i.postimg.cc/yxXXpZvZ/depositphotos-159290092-stock-illustration-slot-machine-seven-icon-color.webp", // Seven
-            "https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg" // Bar
+            "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg",
+            "https://i.postimg.cc/yxXXpZvZ/depositphotos-159290092-stock-illustration-slot-machine-seven-icon-color.webp",
+            "https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg"
         ];
 
         const confirmationNumbers = [
-            "45875664", "58761232", "87653099", "14589736", "01589536", 
+            "45875664", "58761232", "87653099", "14589736", "01589536",
             "25796864", "28658901", "02040587", "32158964", "38561515",
             "71456611", "82547125", "94585477", "05161983", "02262007",
             "09232009", "04586652", "17565211", "25893455", "24751855"
@@ -41,7 +41,6 @@
         const maxWinners = 20;
         let winnerIndices = JSON.parse(localStorage.getItem("winnerIndices")) || [];
 
-        // Preload images
         function preloadImages() {
             slotImages.forEach(src => {
                 const img = new Image();
@@ -52,15 +51,18 @@
         preloadImages();
 
         function getRandomImage() {
-            return slotImages[Math.floor(Math.random() * slotImages.length)];
+            const randomIndex = Math.floor(Math.random() * slotImages.length);
+            return slotImages[randomIndex];
         }
 
         function getRandomConfirmationNumber() {
-            let availableNumbers = confirmationNumbers.filter((_, index) => !winnerIndices.includes(index));
-            if (availableNumbers.length === 0) return null; // No available numbers left
-            let randomIndex = Math.floor(Math.random() * availableNumbers.length);
-            let confirmationNumber = availableNumbers[randomIndex];
-            winnerIndices.push(confirmationNumbers.indexOf(confirmationNumber));
+            const availableNumbers = confirmationNumbers.filter(number => !winnerIndices.includes(number));
+            if (availableNumbers.length === 0) {
+                return null;
+            }
+            const randomIndex = Math.floor(Math.random() * availableNumbers.length);
+            const confirmationNumber = availableNumbers[randomIndex];
+            winnerIndices.push(confirmationNumber);
             localStorage.setItem("winnerIndices", JSON.stringify(winnerIndices));
             return confirmationNumber;
         }
@@ -80,31 +82,25 @@
             let slot2 = document.getElementById('slot2');
             let slot3 = document.getElementById('slot3');
 
-            // Reset animation
             slot1.style.animation = 'none';
             slot2.style.animation = 'none';
             slot3.style.animation = 'none';
 
-            // Force reflow/repaint to restart the animation
-            slot1.offsetHeight; // trigger reflow
+            slot1.offsetHeight; 
             slot2.offsetHeight;
             slot3.offsetHeight;
 
-            // Apply spinning animation again
-            slot1.style.animation = 'spinAnimation 2s cubic-bezier(0.25, 0.8, 0.25, 1)';
-            slot2.style.animation = 'spinAnimation 2s cubic-bezier(0.25, 0.8, 0.25, 1)';
-            slot3.style.animation = 'spinAnimation 2s cubic-bezier(0.25, 0.8, 0.25, 1)';
+            slot1.style.animation = 'spin360 2s ease-in-out';
+            slot2.style.animation = 'spin360 2s ease-in-out';
+            slot3.style.animation = 'spin360 2s ease-in-out';
 
-            // Update images
             slot1.src = getRandomImage();
             slot2.src = getRandomImage();
             slot3.src = getRandomImage();
 
-            // Increment spin count
             spinCount++;
             localStorage.setItem("spinCount", spinCount);
 
-            // Check for a winning combination (3 cherries)
             if (slot1.src === slot2.src && slot2.src === slot3.src && slot1.src === slotImages[0]) {
                 let confirmationNumber = getRandomConfirmationNumber();
                 if (confirmationNumber) {
@@ -119,5 +115,6 @@
             }
         }
     </script>
+
 </body>
 </html>
