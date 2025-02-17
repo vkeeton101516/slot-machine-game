@@ -8,8 +8,8 @@
     body { font-family: Arial, sans-serif; text-align: center; }
     .slot-container { margin: 20px; }
     .slot-machine { display: flex; justify-content: center; }
-    .slot { width: 100px; height: 100px; margin: 0 10px; }
-    .slot img { width: 100%; height: 100%; border-radius: 10px; transition: transform 1s ease; }
+    .slot { width: 100px; height: 100px; margin: 0 10px; overflow: hidden; }
+    .slot img { width: 100%; height: 100%; border-radius: 10px; transition: transform 0.5s ease-in-out; }
     button { font-size: 20px; padding: 10px 20px; cursor: pointer; }
     .result { font-size: 24px; margin-top: 20px; font-weight: bold; }
     .confirmation-number { font-size: 20px; margin-top: 10px; color: green; }
@@ -30,12 +30,13 @@
   <script>
     const slotImages = ["https://iili.io/2m5cdSp.jpg", "https://iili.io/2m5ccib.jpg", "https://iili.io/2m5lFrx.jpg"];
     const confirmationNumbers = [
-      45875664, 58761232, 87653099, 14589736, 1589536, 
-      25796864, 28658901, 2040587, 32158964, 38561515, 
-      71456611, 82547125, 94585477, 5161983, 2262007, 
-      9232009, 4586652, 17565211, 25893455, 24751855
+      "45875664", "58761232", "87653099", "14589736", "01589536", 
+      "25796864", "28658901", "02040587", "32158964", "38561515", 
+      "71456611", "82547125", "94585477", "05161983", "02262007", 
+      "09232009", "04586652", "17565211", "25893455", "24751855"
     ];
     let winners = JSON.parse(localStorage.getItem('winners')) || [];
+    
     document.getElementById("spin-button").addEventListener("click", spin);
 
     function spin() {
@@ -53,6 +54,8 @@
       }
 
       document.getElementById('result').textContent = "Spinning...";
+      document.getElementById('confirmation-number').textContent = "";
+
       const slots = [document.getElementById('slot1'), document.getElementById('slot2'), document.getElementById('slot3')];
       slots.forEach(slot => slot.querySelector('img').style.transform = "rotate(360deg)");
 
@@ -63,7 +66,8 @@
     }
 
     function getRandomImage() {
-      return Math.random() < 0.5 ? slotImages[0] : slotImages[Math.floor(Math.random() * 2) + 1];
+      // Ensuring $5 symbol only appears for a winning combo
+      return Math.random() < 0.7 ? slotImages[0] : slotImages[Math.floor(Math.random() * 2) + 1]; 
     }
 
     function getPlayerId() {
@@ -76,7 +80,13 @@
     }
 
     function checkResult(playerId) {
-      const slots = [document.getElementById('slot1').querySelector('img').src, document.getElementById('slot2').querySelector('img').src, document.getElementById('slot3').querySelector('img').src];
+      const slots = [
+        document.getElementById('slot1').querySelector('img').src, 
+        document.getElementById('slot2').querySelector('img').src, 
+        document.getElementById('slot3').querySelector('img').src
+      ];
+
+      // Check if all slots are the $5 prize (ensuring $10 and $50 never win)
       if (slots.every(src => src.includes("2m5cdSp"))) {
         if (winners.length < 20) {
           let confirmationNumber = confirmationNumbers[winners.length];
@@ -88,7 +98,6 @@
         }
       } else {
         document.getElementById('result').textContent = "Try Again!";
-        document.getElementById('confirmation-number').textContent = "";
       }
     }
   </script>
