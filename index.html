@@ -60,7 +60,6 @@
             overflow: hidden;
             background: #222;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-            transition: transform 1s ease-in-out;
         }
 
         .slot img {
@@ -100,10 +99,6 @@
             margin-top: 15px;
         }
 
-        .spinning {
-            animation: spin 1s ease-in-out;
-        }
-
         @keyframes spin {
             0% {
                 transform: rotate(0deg);
@@ -111,6 +106,10 @@
             100% {
                 transform: rotate(1080deg); /* 3 full rotations */
             }
+        }
+
+        .spinning {
+            animation: spin 1s ease-in-out forwards;
         }
     </style>
 </head>
@@ -163,3 +162,5 @@
                 document.getElementById('warning').textContent = "You have reached the daily spin limit!";
                 return;
             }
+
+            let slot1 = document.getElem
