@@ -53,26 +53,12 @@ body {
     overflow: hidden;
     background: #222;
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-    position: relative;
 }
 
 .slot img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    animation: spin360 2s ease-in-out;
-}
-
-@keyframes spin360 {
-    0% {
-        transform: rotate(0deg);
-    }
-    50% {
-        transform: rotate(1800deg);
-    }
-    100% {
-        transform: rotate(3600deg);
-    }
 }
 
 .spin-button {
@@ -96,15 +82,4 @@ body {
     margin-top: 20px;
     font-size: 24px;
     color: #fff;
-}
-
-.confirmation-number {
-    font-size: 20px;
-    color: #ffeb3b;
-    margin-top: 10px;
-}
-
-@keyframes spinAnimation {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-720px); }
 }
