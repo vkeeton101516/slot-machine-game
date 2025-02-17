@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Slot Machine Game</title>
+  <title>Devoted Deals Slots</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -14,6 +14,7 @@
       align-items: center;
       height: 100vh;
       margin: 0;
+      flex-direction: column;
     }
     button {
       padding: 20px 40px;
@@ -28,22 +29,136 @@
     button:hover {
       transform: scale(1.1);
     }
+    .slot-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .slot-machine {
+      display: flex;
+      gap: 20px;
+    }
+    .slot {
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      border: 4px solid white;
+      background-color: #333;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 24px;
+    }
+    .confirmation-number {
+      color: #ff66b2;
+      font-size: 18px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
 
-  <button onclick="spin()">Spin</button>
+  <!-- Slot machine header -->
+  <h1>Devoted Deals Slots</h1>
+
+  <!-- Slot machine display -->
+  <div class="slot-container">
+    <div class="slot-machine">
+      <div class="slot" id="slot1">
+        <img src="https://iili.io/2m5cdSp.jpg" alt="Slot 1" />
+      </div>
+      <div class="slot" id="slot2">
+        <img src="https://iili.io/2m5cdSp.jpg" alt="Slot 2" />
+      </div>
+      <div class="slot" id="slot3">
+        <img src="https://iili.io/2m5cdSp.jpg" alt="Slot 3" />
+      </div>
+    </div>
+
+    <!-- Spin button -->
+    <button onclick="spin()">Spin</button>
+
+    <!-- Result display -->
+    <div class="result" id="result"></div>
+    <div class="confirmation-number" id="confirmation-number"></div>
+  </div>
 
   <script>
-    // Define the spin function in the global scope
+    // Images for the slots
+    const slotImages = [
+      "https://iili.io/2m5cdSp.jpg", // $5 Gift Card
+      "https://iili.io/2m5ccib.jpg", // $10 Gift Card
+      "https://iili.io/2m5lFrx.jpg"  // $50 Gift Card
+    ];
+
+    // Confirmation numbers (20 winners in total)
+    const confirmationNumbers = [
+      "45875664", "58761232", "87653099", "14589736", "01589536", 
+      "25796864", "28658901", "02040587", "32158964", "38561515", 
+      "71456611", "82547125", "94585477", "05161983", "02262007", 
+      "09232009", "04586652", "17565211", "25893455", "24751855"
+    ];
+
+    let spinCount = 0;
+    const maxSpins = 5;
+    let winnersThisMonth = []; // Array to track winners
+    const totalWinners = 20; // Total winners in a month
+    const maxWeeklyWinners = 5; // Max winners per week
+
+    // Spin function
     function spin() {
-      console.log("Spinning the slot machine!");
-      // Add your other logic here.
+      if (spinCount >= maxSpins) {
+        alert("You have reached the maximum number of spins for today.");
+        return;
+      }
+
+      // Reset result display
+      document.getElementById("result").innerHTML = "";
+      document.getElementById("confirmation-number").innerHTML = "";
+
+      // Spin the slots
+      const slot1 = document.getElementById("slot1");
+      const slot2 = document.getElementById("slot2");
+      const slot3 = document.getElementById("slot3");
+
+      // Randomly pick images for each slot
+      const randomImage1 = getRandomImage();
+      const randomImage2 = getRandomImage();
+      const randomImage3 = getRandomImage();
+
+      slot1.innerHTML = <img src="${randomImage1}" alt="Slot 1" />;
+      slot2.innerHTML = <img src="${randomImage2}" alt="Slot 2" />;
+      slot3.innerHTML = <img src="${randomImage3}" alt="Slot 3" />;
+
+      // Increment spin count
+      spinCount++;
+
+      // Check for winner
+      setTimeout(() => {
+        checkWinner(randomImage1, randomImage2, randomImage3);
+      }, 1000); // Delay to allow images to show before checking
     }
-  </script>
 
-</body>
-</html>
+    // Get a random slot image (from available images)
+    function getRandomImage() {
+      return slotImages[Math.floor(Math.random() * slotImages.length)];
+    }
 
-
-
+    // Check if the player wins
+    function checkWinner(img1, img2, img3) {
+      if (img1 === img2 && img2 === img3 && img1 === slotImages[0]) {
+        // If all three slots match and are the $5 symbol
+        if (winnersThisMonth.length < totalWinners) {
+          // Check if we have already reached the max winners
+          const confirmationNumber = getConfirmationNumber();
+          winnersThisMonth.push(confirmationNumber); // Add winner to the list
+          document.getElementById("result").innerHTML = "You win!";
+          document.getElementById("confirmation-number").innerHTML = Confirmation Number: ${confirmationNumber};
+        } else {
+          document.getElementById("result").innerHTML = "Sorry, all winners for the month are taken!";
+        }
+      } else {
+        document.getElementById
