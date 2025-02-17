@@ -108,11 +108,13 @@
 
     <script>
         const slotImages = [
-            "https://iili.io/2yd7WoG.jpg", 
-            "https://iili.io/2ydaqYB.webp"
+            "https://iili.io/2yd7WoG.jpg", // Cherry
+            "https://iili.io/2ydaqYB.webp" // Non-winning symbol
         ];
         let spinCount = parseInt(localStorage.getItem("spinCount")) || 0;
         const maxSpins = 5;
+        let monthlyWinners = parseInt(localStorage.getItem("monthlyWinners")) || 0;
+        const maxWinners = 20;
 
         function getRandomImage() {
             return slotImages[Math.floor(Math.random() * slotImages.length)];
@@ -121,6 +123,11 @@
         function spin() {
             if (spinCount >= maxSpins) {
                 document.getElementById('warning').textContent = "You have reached the daily spin limit!";
+                return;
+            }
+
+            if (monthlyWinners >= maxWinners) {
+                document.getElementById('warning').textContent = "The monthly winner limit has been reached.";
                 return;
             }
 
@@ -152,6 +159,8 @@
         function checkResult(images) {
             if (images[0] === images[1] && images[1] === images[2] && images[0] === "https://iili.io/2yd7WoG.jpg") {
                 document.getElementById('result').innerHTML = "<span style='color: yellow;'>You Win!</span>";
+                monthlyWinners++;
+                localStorage.setItem("monthlyWinners", monthlyWinners);
             } else {
                 document.getElementById('result').innerHTML = "<span style='color: red;'>Try Again!</span>";
             }
