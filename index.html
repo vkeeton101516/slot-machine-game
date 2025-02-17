@@ -137,20 +137,26 @@
 
             let tempImages = [getRandomImage(), getRandomImage(), getRandomImage()];
 
-            let duration = 1000;
-            let startTime = Date.now();
+            // Smooth Spin Effect
+            let spinDuration = 2000; // Total spin time
+            let intervalDuration = 50; // Time interval for each image change
+            let totalIterations = spinDuration / intervalDuration;
+            let currentIteration = 0;
+
             let spinInterval = setInterval(() => {
                 slot1.src = getRandomImage();
                 slot2.src = getRandomImage();
                 slot3.src = getRandomImage();
-                if (Date.now() - startTime > duration) {
+                currentIteration++;
+
+                if (currentIteration >= totalIterations) {
                     clearInterval(spinInterval);
                     slot1.src = tempImages[0];
                     slot2.src = tempImages[1];
                     slot3.src = tempImages[2];
                     checkResult(tempImages);
                 }
-            }, 100);
+            }, intervalDuration);
 
             spinCount++;
             localStorage.setItem("spinCount", spinCount);
