@@ -147,19 +147,19 @@
             "https://iili.io/2m5lFrx.jpg"   // $50 Gift Card
         ];
 
-        const confirmationNumbers = [
-            45875664, 58761232, 87653099, 14589736, 01589536,
-            25796864, 28658901, 02040587, 32158964, 38561515,
-            71456611, 82547125, 94585477, 05161983, 02262007,
-            09232009, 04586652, 17565211, 25893455, 24751855
-        ];
-
         let spinCount = localStorage.getItem("spinCount") ? parseInt(localStorage.getItem("spinCount")) : 0;
         const maxSpins = 3;
-        let winCount = 0;
+        const maxWinsPerMonth = 20;  // Max wins per month
+        let dailyWin = localStorage.getItem("dailyWin");  // Track if the user has won today
+        const confirmationNumbers = [
+            45875664, 58761232, 87653099, 14589736, 01589536, 25796864, 28658901, 02040587, 32158964,
+            38561515, 71456611, 82547125, 94585477, 05161983, 02262007, 09232009, 04586652, 17565211,
+            25893455, 24751855
+        ];
+        let currentWinnerIndex = 0;  // This will help us pick a unique confirmation number for each winner
 
         function getRandomImage() {
-            return slotImages[Math.floor(Math.random() * 3)];
+            return slotImages[Math.floor(Math.random() * slotImages.length)];
         }
 
         function spin() {
@@ -168,8 +168,8 @@
                 return;
             }
 
-            if (winCount >= 20) {
-                document.getElementById('warning').textContent = "The maximum number of wins for the month has been reached!";
+            if (dailyWin) {
+                document.getElementById('warning').textContent = "You have already won today!";
                 return;
             }
 
@@ -177,16 +177,17 @@
             let slot2 = document.getElementById('slot2');
             let slot3 = document.getElementById('slot3');
 
-            // Add temporary images to start the spin
+            // Add some temporary image to start the spin
             slot1.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
             slot2.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
             slot3.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
 
-            // Reset and apply spin effect
+            // Reset and apply spin effect every time
             slot1.classList.remove('spinning');
             slot2.classList.remove('spinning');
             slot3.classList.remove('spinning');
 
+            // Trigger the spin effect
             setTimeout(() => {
                 slot1.classList.add('spinning');
                 slot2.classList.add('spinning');
@@ -194,10 +195,10 @@
             }, 10);
 
             spinCount++;
-            localStorage.setItem("spinCount", spinCount);
+            localStorage.setItem("spinCount", spinCount); // Store updated spin count
             setTimeout(() => {
                 checkResult();
-            }, 1000); // Check result after spin
+            }, 1000); // Wait for 1 second before checking result
         }
 
         function checkResult() {
@@ -205,17 +206,34 @@
             let slot2 = document.getElementById('slot2').querySelector('img').src;
             let slot3 = document.getElementById('slot3').querySelector('img').src;
 
+            // Ensure only $5 gift cards can win
             if (slot1 === slot2 && slot2 === slot3 && slot1.includes('2m5cdSp')) {
-                if (winCount < 20) {
-                    let confirmationNumber = confirmationNumbers[winCount];
+                if (currentWinnerIndex < maxWinsPerMonth) {
+                    let confirmationNumber = confirmationNumbers[currentWinnerIndex];
                     document.getElementById('result').innerHTML = "<span class='neon-text'>You Win!</span> Confirmation Number: " + confirmationNumber;
-                    winCount++;
-                    localStorage.setItem("winCount", winCount);  // Store the number of wins
+                    localStorage.setItem("dailyWin", true);  // Mark that the user has won today
+                    localStorage.setItem("currentWinnerIndex", ++currentWinnerIndex);  // Move to the next confirmation number
+                } else {
+                    document.getElementById('result').innerHTML = "<span class='neon-text'>Sorry, no more wins for this month!</span>";
                 }
             } else {
                 document.getElementById('result').innerHTML = "<span class='neon-text'>Try Again!</span>";
             }
         }
+
+        // Reset daily win after midnight
+        function resetDailyWin() {
+            const lastResetDate = localStorage.getItem("lastResetDate");
+            const today = new Date().toISOString().split('T')[0];
+
+            if (lastResetDate !== today) {
+                localStorage.removeItem("dailyWin");
+                localStorage.setItem("lastResetDate", today);
+            }
+        }
+
+        // Call resetDailyWin function every time the page loads to ensure it resets
+        resetDailyWin();
     </script>
 
 </body>
