@@ -147,11 +147,15 @@
             "https://iili.io/2m5lFrx.jpg"   // $50 Gift Card
         ];
 
+        const confirmationNumbers = [
+            45875664, 58761232, 87653099, 14589736, 1589536, 25796864, 
+            28658901, 2040587, 32158964, 38561515, 71456611, 82547125, 
+            94585477, 5161983, 2262007, 9232009, 4586652, 17565211, 
+            25893455, 24751855
+        ];
+
         let spinCount = localStorage.getItem("spinCount") ? parseInt(localStorage.getItem("spinCount")) : 0;
         const maxSpins = 10;
-
-        // Google Sheets script URL (replace with your own)
-        const googleSheetsURL = 'https://script.google.com/macros/s/AKfycbwohCvT1GGGlUZRgrriFl7h_UVztADtAGGOZvPHsPoWxFUH5mMMFpiODNykuh06h0cTOw/exec';
 
         function getRandomImage() {
             return slotImages[Math.floor(Math.random() * slotImages.length)];
@@ -159,81 +163,4 @@
 
         function spin() {
             if (spinCount >= maxSpins) {
-                document.getElementById('warning').textContent = "You have reached the daily spin limit!";
-                return;
-            }
-
-            let slot1 = document.getElementById('slot1');
-            let slot2 = document.getElementById('slot2');
-            let slot3 = document.getElementById('slot3');
-
-            // Add some temporary image to start the spin
-            slot1.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
-            slot2.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
-            slot3.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
-
-            // Reset and apply spin effect every time
-            slot1.classList.remove('spinning');
-            slot2.classList.remove('spinning');
-            slot3.classList.remove('spinning');
-
-            // Trigger the spin effect
-            setTimeout(() => {
-                slot1.classList.add('spinning');
-                slot2.classList.add('spinning');
-                slot3.classList.add('spinning');
-            }, 10);
-
-            spinCount++;
-            localStorage.setItem("spinCount", spinCount); // Store updated spin count
-            setTimeout(() => {
-                checkResult();
-            }, 1000); // Wait for 1 second before checking result
-        }
-
-        function checkResult() {
-            let slot1 = document.getElementById('slot1').querySelector('img').src;
-            let slot2 = document.getElementById('slot2').querySelector('img').src;
-            let slot3 = document.getElementById('slot3').querySelector('img').src;
-
-            if (slot1 === slot2 && slot2 === slot3) {
-                let confirmationNumber = generateConfirmationNumber();
-                document.getElementById('result').innerHTML = "<span class='neon-text'>You Win!</span> Confirmation Number: " + confirmationNumber;
-                sendToGoogleSheets(confirmationNumber, slot1);
-            } else {
-                document.getElementById('result').innerHTML = "<span class='neon-text'>Try Again!</span>";
-            }
-        }
-
-        function generateConfirmationNumber() {
-            return Math.floor(Math.random() * 1000000);  // Random confirmation number between 0 and 999999
-        }
-
-        function sendToGoogleSheets(confirmationNumber, prizeImage) {
-            let prize = prizeImage.includes('2m5cdSp') ? "5" : prizeImage.includes('2m5ccib') ? "10" : "50";
-            let data = {
-                confirmationNumber: confirmationNumber,
-                timestamp: new Date().toISOString(),
-                spinCount: spinCount,
-                prize: prize
-            };
-
-            fetch(googleSheetsURL, {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json' 
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(responseData => {
-                console.log('Data sent successfully:', responseData);
-            })
-            .catch(error => {
-                console.error('Error sending data:', error);
-            });
-        }
-    </script>
-
-</body>
-</html>
+                document.getElementById('warning').textContent = "You have reached the daily spin lim
