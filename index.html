@@ -100,7 +100,6 @@
             margin-top: 15px;
         }
 
-        /* Spin effect class */
         .spinning {
             animation: spin 1s ease-in-out;
         }
@@ -117,10 +116,8 @@
 </head>
 <body>
 
-    <!-- Header -->
     <div class="header">Devoted Deals Slots</div>
 
-    <!-- Slot Machine Container -->
     <div class="slot-container">
         <div class="slot-machine">
             <div class="slot" id="slot1">
@@ -147,15 +144,15 @@
             "https://iili.io/2m5lFrx.jpg"   // $50 Gift Card
         ];
 
-        const confirmationNumbers = [
-            45875664, 58761232, 87653099, 14589736, 1589536, 25796864, 
-            28658901, 2040587, 32158964, 38561515, 71456611, 82547125, 
-            94585477, 5161983, 2262007, 9232009, 4586652, 17565211, 
-            25893455, 24751855
-        ];
-
         let spinCount = localStorage.getItem("spinCount") ? parseInt(localStorage.getItem("spinCount")) : 0;
         const maxSpins = 10;
+
+        const confirmationNumbers = [
+            "45875664", "58761232", "87653099", "14589736", "01589536", 
+            "25796864", "28658901", "02040587", "32158964", "38561515",
+            "71456611", "82547125", "94585477", "05161983", "02262007",
+            "09232009", "04586652", "17565211", "25893455", "24751855"
+        ];
 
         function getRandomImage() {
             return slotImages[Math.floor(Math.random() * slotImages.length)];
@@ -163,4 +160,6 @@
 
         function spin() {
             if (spinCount >= maxSpins) {
-                document.getElementById('warning').textContent = "You have reached the daily spin lim
+                document.getElementById('warning').textContent = "You have reached the daily spin limit!";
+                return;
+            }
