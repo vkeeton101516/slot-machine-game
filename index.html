@@ -5,14 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Slot Machine Game</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; }
-    .slot-container { margin: 20px; }
+    body { 
+      font-family: Arial, sans-serif; 
+      text-align: center; 
+      background: url('https://freeimghost.net/images/2025/02/14/bg.jpg') no-repeat center center fixed; 
+      background-size: cover; 
+      color: white; /* Adjust text color for visibility */
+    }
+    .slot-container { 
+      margin: 20px; 
+      background: rgba(0, 0, 0, 0.7); /* Dark overlay for readability */
+      padding: 20px; 
+      border-radius: 10px; 
+      display: inline-block;
+    }
     .slot-machine { display: flex; justify-content: center; }
     .slot { width: 100px; height: 100px; margin: 0 10px; overflow: hidden; }
     .slot img { width: 100%; height: 100%; border-radius: 10px; transition: transform 0.5s ease-in-out; }
-    button { font-size: 20px; padding: 10px 20px; cursor: pointer; }
+    button { 
+      font-size: 20px; 
+      padding: 10px 20px; 
+      cursor: pointer; 
+      background-color: gold; 
+      border: none; 
+      border-radius: 5px;
+    }
     .result { font-size: 24px; margin-top: 20px; font-weight: bold; }
-    .confirmation-number { font-size: 20px; margin-top: 10px; color: green; }
+    .confirmation-number { font-size: 20px; margin-top: 10px; color: lightgreen; }
   </style>
 </head>
 <body>
@@ -66,7 +85,6 @@
     }
 
     function getRandomImage() {
-      // Ensuring $5 symbol only appears for a winning combo
       return Math.random() < 0.7 ? slotImages[0] : slotImages[Math.floor(Math.random() * 2) + 1]; 
     }
 
@@ -86,7 +104,6 @@
         document.getElementById('slot3').querySelector('img').src
       ];
 
-      // Check if all slots are the $5 prize (ensuring $10 and $50 never win)
       if (slots.every(src => src.includes("2m5cdSp"))) {
         if (winners.length < 20) {
           let confirmationNumber = confirmationNumbers[winners.length];
