@@ -1,146 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slot Machine</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #111;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-            margin: 0;
-        }
-
-        .header {
-            font-size: 36px;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 20px;
-        }
-
-        .slot-machine {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .slot {
-            width: 120px;
-            height: 120px;
-            background-color: #333;
-            border: 2px solid white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 24px;
-        }
-
-        .spin-button {
-            padding: 15px 30px;
-            background-color: #ff66b2;
-            color: white;
-            font-size: 18px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .spin-button:hover {
-            background-color: #ff3385;
-        }
-
-        .result {
-            color: white;
-            font-size: 24px;
-            margin-top: 20px;
-        }
-
-        .warning {
-            color: red;
-            font-size: 20px;
-            margin-top: 20px;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(1080deg); /* 3 full rotations */
-            }
-        }
-
-        .spinning {
-            animation: spin 1s ease-in-out forwards;
-        }
-    </style>
+  <title>Slot machine game</title>
 </head>
 <body>
-
-    <div class="header">Devoted Deals Slot Machine</div>
-
-    <div class="slot-machine">
-        <div class="slot" id="slot1">?</div>
-        <div class="slot" id="slot2">?</div>
-        <div class="slot" id="slot3">?</div>
-    </div>
-
-    <button class="spin-button" onclick="spin()">Spin</button>
-
-    <div class="result" id="result"></div>
-    <div class="warning" id="warning"></div>
-
-    <script>
-        const slotImages = [
-            "https://iili.io/2m5cdSp.jpg", // $5 Gift Card
-            "https://iili.io/2m5ccib.jpg", // $10 Gift Card
-            "https://iili.io/2m5lFrx.jpg"  // $50 Gift Card
-        ];
-
-        let spinCount = localStorage.getItem("spinCount") ? parseInt(localStorage.getItem("spinCount")) : 0;
-        const maxSpins = 10;
-
-        const confirmationNumbers = [
-            "45875664", "58761232", "87653099", "14589736", "01589536", 
-            "25796864", "28658901", "02040587", "32158964", "38561515",
-            "71456611", "82547125", "94585477", "05161983", "02262007",
-            "09232009", "04586652", "17565211", "25893455", "24751855"
-        ];
-
-        function getRandomImage() {
-            return slotImages[Math.floor(Math.random() * slotImages.length)];
-        }
-
-        function spin() {
-            console.log("Spin triggered");
-
-            if (spinCount >= maxSpins) {
-                document.getElementById('warning').textContent = "You have reached the daily spin limit!";
-                return;
-            }
-
-            let slot1 = document.getElementById('slot1');
-            let slot2 = document.getElementById('slot2');
-            let slot3 = document.getElementById('slot3');
-
-            // Start the spinning animation
-            slot1.classList.add('spinning');
-            slot2.classList.add('spinning');
-            slot3.classList.add('spinning');
-
-            // Wait for the animation to complete before changing images
-            setTimeout(() => {
-                console.log("Changing images after spin");
-
-                // Change the images after animation ends
-                slot1.innerHTML = <img src="${getRandomImage()}" alt="Slot Image">;
-                slot2.innerHTML = <img src="${getRandomImage()}" alt="Slot Image">;
-                slot3.innerHTML = <img src="${getRandomImage()}" alt="Slot Image">;
-
-                // Increment spin count and store it in localStorag
+  <button onclick="spin()">Spin</button>
+  <script>
+    // Define the spin function in the global scope
+    function spin() {
+      console.log("Spinning the slot machine!");
+      // Add your other logic here for slot animations, results, etc.
+    }
+  </script>
+</body>
+</html>
