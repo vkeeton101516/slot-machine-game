@@ -108,32 +108,35 @@
 
     <script>
         const slotImages = [
-            "https://i.imgur.com/YlY7Hww.jpg", // Cherry (winning symbol)
-            "https://i.imgur.com/sTkpmSt.jpg", // Non-winning symbol 1
-            "https://i.imgur.com/XZx2g6k.jpg", // Non-winning symbol 2
-            "https://i.imgur.com/lGBH62R.jpg", // Non-winning symbol 3
+            "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg", // Cherry
+            "https://i.postimg.cc/yxXXpZvZ/depositphotos-159290092-stock-illustration-slot-machine-seven-icon-color.webp", // Seven
+            "https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg" // Non-winning symbol (third image)
         ];
 
-        // List of 20 unique confirmation numbers
         const confirmationNumbers = [
-            "45875664", "58761232", "87653099", "14589736", "01589536", "25796864", "28658901", "02040587",
-            "32158964", "38561515", "71456611", "82547125", "94585477", "05161983", "02262007", "09232009",
-            "04586652", "17565211", "25893455", "24751855"
+            "45875664", "58761232", "87653099", "14589736", "01589536", "25796864", "28658901", 
+            "02040587", "32158964", "38561515", "71456611", "82547125", "94585477", "05161983", 
+            "02262007", "09232009", "04586652", "17565211", "25893455", "24751855"
         ];
 
         let spinCount = parseInt(localStorage.getItem("spinCount")) || 0;
         const maxSpins = 5;
         let monthlyWinners = parseInt(localStorage.getItem("monthlyWinners")) || 0;
         const maxWinners = 20;
-        let dailyWinners = [];
+        let winners = [];
 
         function getRandomImage() {
             return slotImages[Math.floor(Math.random() * slotImages.length)];
         }
 
-        function getRandomWinner() {
-            const winnerIndex = Math.floor(Math.random() * confirmationNumbers.length);
-            return confirmationNumbers[winnerIndex];
+        function getWinnerConfirmation() {
+            const availableNumbers = confirmationNumbers.filter(num => !winners.includes(num));
+            if (availableNumbers.length > 0) {
+                const winnerNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
+                winners.push(winnerNumber);
+                return winnerNumber;
+            }
+            return null;
         }
 
         function spin() {
@@ -154,8 +157,8 @@
             let tempImages = [getRandomImage(), getRandomImage(), getRandomImage()];
 
             // Smooth Spin Effect
-            let spinDuration = 2000;
-            let intervalDuration = 50;
+            let spinDuration = 2000; // Total spin time
+            let intervalDuration = 50; // Time interval for each image change
             let totalIterations = spinDuration / intervalDuration;
             let currentIteration = 0;
 
@@ -179,20 +182,17 @@
         }
 
         function checkResult(images) {
-            // Check for the winning combination (3 cherries)
-            if (images[0] === images[1] && images[1] === images[2] && images[0] === "https://i.imgur.com/YlY7Hww.jpg") {
-                let winnerConfirmation = getRandomWinner();
-                document.getElementById('result').innerHTML = `You Win! Confirmation Number: ${winnerConfirmation}`;
-                monthlyWinners++;
-                dailyWinners.push(winnerConfirmation);
-                localStorage.setItem("monthlyWinners", monthlyWinners);
-
-                // Ensuring each player only wins once a day
-                if (dailyWinners.length >= maxWinners) {
-                    document.getElementById('warning').textContent = "The daily winner limit has been reached.";
+            if (images[0] === images[1] && images[1] === images[2] && images[0] === "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg") {
+                const winnerConfirmation = getWinnerConfirmation();
+                if (winnerConfirmation) {
+                    document.getElementById('result').innerHTML = "<span style='color: yellow;'>You Win! Your confirmation number is: " + winnerConfirmation + "</span>";
+                    monthlyWinners++;
+                    localStorage.setItem("monthlyWinners", monthlyWinners);
+                } else {
+                    document.getElementById('result').innerHTML = "<span style='color: red;'>No more winners for this month. Try again later!</span>";
                 }
             } else {
-                document.getElementById('result').innerHTML = "Try Again!";
+                document.getElementById('result').innerHTML = "<span style='color: red;'>Try Again!</span>";
             }
         }
     </script>
