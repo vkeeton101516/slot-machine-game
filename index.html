@@ -134,7 +134,7 @@
 
         let usedConfirmationNumbers = JSON.parse(localStorage.getItem("usedConfirmationNumbers")) || [];
         let spinCount = parseInt(localStorage.getItem("spinCount") || "0");
-        const maxSpins = 5; // Adjusted for 5 per week
+        const maxSpins = 50; // Adjusted for 5 per week
 
         function spin() {
             if (spinCount >= maxSpins) {
