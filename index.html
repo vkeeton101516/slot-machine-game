@@ -16,7 +16,6 @@
             margin: 0;
             flex-direction: column;
         }
-
         .header {
             font-size: 50px;
             font-weight: bold;
@@ -27,13 +26,11 @@
             letter-spacing: 5px;
             animation: neonGlow 1.5s ease-in-out infinite alternate;
         }
-
         @keyframes neonGlow {
             0% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
             50% { text-shadow: 0 0 20px #ff3399, 0 0 30px #ff3399, 0 0 40px #ff3399; }
             100% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
         }
-
         .slot-container {
             text-align: center;
             background: rgba(0, 0, 0, 0.7);
@@ -43,7 +40,6 @@
             width: 90%;
             max-width: 800px;
         }
-
         .slot-machine {
             display: flex;
             justify-content: center;
@@ -51,7 +47,6 @@
             gap: 15px;
             margin-bottom: 30px;
         }
-
         .slot {
             width: 120px;
             height: 120px;
@@ -62,13 +57,11 @@
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
             transition: transform 1s ease-in-out;
         }
-
         .slot img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
         .spin-button {
             padding: 15px 30px;
             background: linear-gradient(135deg, #ff66b2, #ff3399);
@@ -80,168 +73,79 @@
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
             transition: all 0.3s ease;
         }
-
         .spin-button:hover {
             background: linear-gradient(135deg, #ff3385, #ff80b3);
             transform: scale(1.1);
         }
-
         .result {
             margin-top: 20px;
             font-size: 28px;
             color: #fff;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
         }
-
         .warning {
             color: red;
             font-size: 20px;
             font-weight: bold;
             margin-top: 15px;
         }
-
-        /* Spin effect class */
-        .spinning {
-            animation: spin 1s ease-in-out;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(1080deg); /* 3 full rotations */
-            }
-        }
     </style>
 </head>
 <body>
-
-    <!-- Header -->
     <div class="header">Devoted Deals Slots</div>
-
-    <!-- Slot Machine Container -->
     <div class="slot-container">
         <div class="slot-machine">
-            <div class="slot" id="slot1">
-                <img src="https://iili.io/2yd7WoG.jpg" alt="Fruit 1">
-            </div>
-            <div class="slot" id="slot2">
-                <img src="https://iili.io/2ydaqYB.webp" alt="Fruit 2">
-            </div>
-            <div class="slot" id="slot3">
-                <img src="https://iili.io/2yd7WoG.jpg" alt="Fruit 1">
-            </div>
+            <div class="slot" id="slot1"></div>
+            <div class="slot" id="slot2"></div>
+            <div class="slot" id="slot3"></div>
         </div>
-
         <button class="spin-button" onclick="spin()">Spin</button>
-
         <div class="result" id="result"></div>
         <div class="warning" id="warning"></div>
     </div>
-
     <script>
         const slotImages = [
-            "https://iili.io/2yd7WoG.jpg",  // Cherry (Winning Symbol)
-            "https://iili.io/2ydaqYB.webp"  // Fruit (Non-winning Symbol)
+            "https://iili.io/2yd7WoG.jpg", // Winning symbol
+            "https://iili.io/2ydaqYB.webp"  // Non-winning symbol
         ];
-
         let spinCount = localStorage.getItem("spinCount") ? parseInt(localStorage.getItem("spinCount")) : 0;
         const maxSpins = 5;
-
-        // Confirmation numbers for winners
-        const confirmationNumbers = [
-            45875664, 58761232, 87653099, 14589736, 01589536, 
-            25796864, 28658901, 02040587, 32158964, 38561515, 
-            71456611, 82547125, 94585477, 05161983, 02262007, 
-            09232009, 04586652, 17565211, 25893455, 24751855
-        ];
-
-        let usedConfirmationNumbers = [];
-        let totalWins = localStorage.getItem("totalWins") ? parseInt(localStorage.getItem("totalWins")) : 0;
-        const maxTotalWins = 20;
-
+        let totalWinners = JSON.parse(localStorage.getItem("totalWinners")) || [];
+        const maxWinnersPerWeek = 5;
         function getRandomImage() {
-            return slotImages[Math.floor(Math.random() * slotImages.length)];
+            return Math.random() < 0.15 ? slotImages[0] : slotImages[1];
         }
-
         function spin() {
-            const currentDate = new Date().toDateString();
-            const lastWinDate = localStorage.getItem("lastWinDate");
-
             if (spinCount >= maxSpins) {
-                document.getElementById('warning').textContent = "You have reached the daily spin limit!";
+                document.getElementById('warning').textContent = "You have reached your daily spin limit!";
                 return;
             }
-
-            if (totalWins >= maxTotalWins) {
-                document.getElementById('warning').textContent = "All wins have been claimed for this month!";
+            if (totalWinners.length >= maxWinnersPerWeek) {
+                document.getElementById('warning').textContent = "Max winners reached for this week!";
                 return;
             }
-
-            // Check if the player has already won today
-            if (lastWinDate === currentDate) {
-                document.getElementById('warning').textContent = "You have already won today!";
-                return;
-            }
-
             let slot1 = document.getElementById('slot1');
             let slot2 = document.getElementById('slot2');
             let slot3 = document.getElementById('slot3');
-
-            // Add some temporary image to start the spin
-            slot1.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
-            slot2.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
-            slot3.innerHTML = '<img src="' + getRandomImage() + '" alt="Slot Image">';
-
-            // Reset and apply spin effect every time
-            slot1.classList.remove('spinning');
-            slot2.classList.remove('spinning');
-            slot3.classList.remove('spinning');
-
-            // Trigger the spin effect
-            setTimeout(() => {
-                slot1.classList.add('spinning');
-                slot2.classList.add('spinning');
-                slot3.classList.add('spinning');
-            }, 10);
-
+            slot1.innerHTML = `<img src="${getRandomImage()}" alt="Slot Image">`;
+            slot2.innerHTML = `<img src="${getRandomImage()}" alt="Slot Image">`;
+            slot3.innerHTML = `<img src="${getRandomImage()}" alt="Slot Image">`;
             spinCount++;
-            localStorage.setItem("spinCount", spinCount); // Store updated spin count
-            setTimeout(() => {
-                checkResult(currentDate);
-            }, 1000); // Wait for 1 second before checking result
+            localStorage.setItem("spinCount", spinCount);
+            checkResult();
         }
-
-        function checkResult(currentDate) {
+        function checkResult() {
             let slot1 = document.getElementById('slot1').querySelector('img').src;
             let slot2 = document.getElementById('slot2').querySelector('img').src;
             let slot3 = document.getElementById('slot3').querySelector('img').src;
-
-            // Only 3 cherry symbols trigger a win
-            if (slot1 === slot2 && slot2 === slot3 && slot1 === "https://iili.io/2yd7WoG.jpg") {
-                // Ensure the player gets a unique confirmation number
-                let confirmationNumber = generateConfirmationNumber();
-                usedConfirmationNumbers.push(confirmationNumber);
-                totalWins++;
-                localStorage.setItem("totalWins", totalWins); // Store updated total wins
-                localStorage.setItem("lastWinDate", currentDate); // Store the date of the win
-                document.getElementById('result').innerHTML = "<span class='neon-text'>You Win!</span> Confirmation Number: " + confirmationNumber;
+            if (slot1 === slot2 && slot2 === slot3 && slot1.includes("2yd7WoG.jpg")) {
+                totalWinners.push(Date.now());
+                localStorage.setItem("totalWinners", JSON.stringify(totalWinners));
+                document.getElementById('result').textContent = "You Win!";
             } else {
-                document.getElementById('result').innerHTML = "<span class='neon-text'>Try Again!</span>";
+                document.getElementById('result').textContent = "Try Again!";
             }
-        }
-
-        function generateConfirmationNumber() {
-            // Pick a random confirmation number from the available list
-            let availableNumbers = confirmationNumbers.filter(num => !usedConfirmationNumbers.includes(num));
-            if (availableNumbers.length === 0) {
-                document.getElementById('warning').textContent = "No more winners available today!";
-                return;
-            }
-            return availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
         }
     </script>
-
 </body>
 </html>
