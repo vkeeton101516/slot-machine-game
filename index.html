@@ -108,10 +108,10 @@
 
     <script>
         const slotImages = [
-            "https://iili.io/2yd7WoG.jpg", // Cherry (winning symbol)
-            "https://iili.io/2ydaqYB.webp", // Non-winning symbol 1
-            "https://iili.io/2ydaqYB.webp", // Non-winning symbol 2
-            "https://iili.io/2ydaqYB.webp", // Non-winning symbol 3
+            "https://i.imgur.com/YlY7Hww.jpg", // Cherry (winning symbol)
+            "https://i.imgur.com/sTkpmSt.jpg", // Non-winning symbol 1
+            "https://i.imgur.com/XZx2g6k.jpg", // Non-winning symbol 2
+            "https://i.imgur.com/lGBH62R.jpg", // Non-winning symbol 3
         ];
 
         // List of 20 unique confirmation numbers
@@ -180,7 +180,7 @@
 
         function checkResult(images) {
             // Check for the winning combination (3 cherries)
-            if (images[0] === images[1] && images[1] === images[2] && images[0] === "https://iili.io/2yd7WoG.jpg") {
+            if (images[0] === images[1] && images[1] === images[2] && images[0] === "https://i.imgur.com/YlY7Hww.jpg") {
                 let winnerConfirmation = getRandomWinner();
                 document.getElementById('result').innerHTML = `You Win! Confirmation Number: ${winnerConfirmation}`;
                 monthlyWinners++;
