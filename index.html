@@ -38,11 +38,13 @@
     }
 
     function spin() {
+        // Check if max daily spins are reached
         if (spinCount >= maxSpins) {
             document.getElementById('warning').textContent = "You have reached the daily spin limit!";
             return;
         }
 
+        // Check if max monthly winners have been reached
         if (monthlyWinners >= maxWinners) {
             document.getElementById('warning').textContent = "The monthly winner limit has been reached.";
             return;
