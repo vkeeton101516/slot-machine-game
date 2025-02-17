@@ -113,7 +113,10 @@
     document.getElementById("spin-button").addEventListener("click", spin);
 
     function spin() {
-      if (hasPlayerWonToday()) return;
+      if (winners.length >= 20) {
+        alert("All 20 winners have been selected.");
+        return;
+      }
 
       console.log("Spinning the slot machine!");
       document.getElementById('result').textContent = "Spinning...";
@@ -144,17 +147,6 @@
       });
     }
 
-    function hasPlayerWonToday() {
-      const today = new Date().toDateString();
-      const lastWinDate = localStorage.getItem("lastWinDate");
-
-      if (lastWinDate === today) {
-        alert("You have already won today! Try again tomorrow.");
-        return true;
-      }
-      return false;
-    }
-
     function getRandomImage() {
       const nonWinnerImages = [
         "https://iili.io/2m5ccib.jpg",  // $10 Gift Card
@@ -171,4 +163,9 @@
       const slot3 = document.getElementById('slot3').querySelector('img').src;
 
       // Check for a win: All three slots must show the same $5 winner
-      if (slot1 === slot2 && slot2 === slot
+      if (slot1 === slot2 && slot2 === slot3 && slot1.includes("2m5cdSp")) {
+        if (winners.length < 20) {
+          let confirmationNumber = confirmationNumbers[winners.length];
+          winners.push(confirmationNumber);
+
+          document.getElementById('result').textContent = "Y
