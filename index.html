@@ -3,51 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Devoted Deals Slots</title>
+    <title>Slot Machine</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-image: url('https://freeimghost.net/images/2025/02/14/bg.jpg');
-            background-size: cover;
+            font-family: Arial, sans-serif;
+            background: #111;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
             flex-direction: column;
+            margin: 0;
         }
 
         .header {
-            font-size: 50px;
+            font-size: 36px;
             font-weight: bold;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 40px;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            animation: neonGlow 1.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes neonGlow {
-            0% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
-            50% { text-shadow: 0 0 20px #ff3399, 0 0 30px #ff3399, 0 0 40px #ff3399; }
-            100% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
-        }
-
-        .slot-container {
-            text-align: center;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 800px;
+            color: white;
+            margin-bottom: 20px;
         }
 
         .slot-machine {
             display: flex;
-            justify-content: center;
-            align-items: center;
             gap: 15px;
             margin-bottom: 30px;
         }
@@ -55,48 +32,39 @@
         .slot {
             width: 120px;
             height: 120px;
-            border-radius: 10px;
-            border: 4px solid #fff;
-            overflow: hidden;
-            background: #222;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-        }
-
-        .slot img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            background-color: #333;
+            border: 2px solid white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
         }
 
         .spin-button {
             padding: 15px 30px;
-            background: linear-gradient(135deg, #ff66b2, #ff3399);
+            background-color: #ff66b2;
             color: white;
             font-size: 18px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
-            transition: all 0.3s ease;
         }
 
         .spin-button:hover {
-            background: linear-gradient(135deg, #ff3385, #ff80b3);
-            transform: scale(1.1);
+            background-color: #ff3385;
         }
 
         .result {
+            color: white;
+            font-size: 24px;
             margin-top: 20px;
-            font-size: 28px;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
         }
 
         .warning {
             color: red;
             font-size: 20px;
-            font-weight: bold;
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
         @keyframes spin {
@@ -115,32 +83,24 @@
 </head>
 <body>
 
-    <div class="header">Devoted Deals Slots</div>
+    <div class="header">Devoted Deals Slot Machine</div>
 
-    <div class="slot-container">
-        <div class="slot-machine">
-            <div class="slot" id="slot1">
-                <img src="https://iili.io/2m5cdSp.jpg" alt="$5 Gift Card">
-            </div>
-            <div class="slot" id="slot2">
-                <img src="https://iili.io/2m5ccib.jpg" alt="$10 Gift Card">
-            </div>
-            <div class="slot" id="slot3">
-                <img src="https://iili.io/2m5lFrx.jpg" alt="$50 Gift Card">
-            </div>
-        </div>
-
-        <button class="spin-button" onclick="spin()">Spin</button>
-
-        <div class="result" id="result"></div>
-        <div class="warning" id="warning"></div>
+    <div class="slot-machine">
+        <div class="slot" id="slot1">?</div>
+        <div class="slot" id="slot2">?</div>
+        <div class="slot" id="slot3">?</div>
     </div>
+
+    <button class="spin-button" onclick="spin()">Spin</button>
+
+    <div class="result" id="result"></div>
+    <div class="warning" id="warning"></div>
 
     <script>
         const slotImages = [
-            "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card
-            "https://iili.io/2m5ccib.jpg",  // $10 Gift Card
-            "https://iili.io/2m5lFrx.jpg"   // $50 Gift Card
+            "https://iili.io/2m5cdSp.jpg", // $5 Gift Card
+            "https://iili.io/2m5ccib.jpg", // $10 Gift Card
+            "https://iili.io/2m5lFrx.jpg"  // $50 Gift Card
         ];
 
         let spinCount = localStorage.getItem("spinCount") ? parseInt(localStorage.getItem("spinCount")) : 0;
@@ -163,4 +123,37 @@
                 return;
             }
 
-            let slot1 = document.getElem
+            let slot1 = document.getElementById('slot1');
+            let slot2 = document.getElementById('slot2');
+            let slot3 = document.getElementById('slot3');
+
+            // Start the spinning animation
+            slot1.classList.add('spinning');
+            slot2.classList.add('spinning');
+            slot3.classList.add('spinning');
+
+            // Wait for the animation to complete before changing images
+            setTimeout(() => {
+                // Change the images after animation ends
+                slot1.innerHTML = <img src="${getRandomImage()}" alt="Slot Image">;
+                slot2.innerHTML = <img src="${getRandomImage()}" alt="Slot Image">;
+                slot3.innerHTML = <img src="${getRandomImage()}" alt="Slot Image">;
+
+                // Increment spin count and store it in localStorage
+                spinCount++;
+                localStorage.setItem("spinCount", spinCount);
+
+                // Reset animation class after images are updated
+                setTimeout(() => {
+                    slot1.classList.remove('spinning');
+                    slot2.classList.remove('spinning');
+                    slot3.classList.remove('spinning');
+                    checkResult();
+                }, 1000); // After 1 second (animation time)
+            }, 1000); // 1 second delay before images change
+        }
+
+        function checkResult() {
+            let slot1 = document.getElementById('slot1').querySelector('img')?.src;
+            let slot2 = document.getElementById('slot2').querySelector('img')?.src;
+            let slot3 = document.getElementById('slot3').querySelector('i
