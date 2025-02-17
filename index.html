@@ -5,182 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Slot Machine Game</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: url('https://freeimghost.net/images/2025/02/14/bg.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      flex-direction: column;
-    }
-    button {
-      padding: 20px 40px;
-      background: #ff66b2;
-      color: white;
-      font-size: 24px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-      margin-top: 20px;
-    }
-    button:hover {
-      transform: scale(1.1);
-    }
-    .slot-container {
-      margin-top: 20px;
-      text-align: center;
-    }
-    .slot-machine {
-      display: flex;
-      gap: 20px;
-    }
-    .slot {
-      width: 150px; 
-      height: 150px;
-      border-radius: 10px;
-      border: 4px solid white;
-      background-color: #333;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      position: relative;
-    }
-    .slot img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      transition: transform 1s ease;
-    }
-    .result {
-      margin-top: 20px;
-      font-size: 24px;
-    }
-    .confirmation-number {
-      color: #ff66b2;
-      font-size: 18px;
-      font-weight: bold;
-    }
+    body { font-family: Arial, sans-serif; text-align: center; }
+    .slot-container { margin: 20px; }
+    .slot-machine { display: flex; justify-content: center; }
+    .slot { width: 100px; height: 100px; margin: 0 10px; }
+    .slot img { width: 100%; height: 100%; border-radius: 10px; transition: transform 1s ease; }
+    button { font-size: 20px; padding: 10px 20px; cursor: pointer; }
+    .result { font-size: 24px; margin-top: 20px; font-weight: bold; }
+    .confirmation-number { font-size: 20px; margin-top: 10px; color: green; }
   </style>
 </head>
 <body>
-
   <h1>Devoted Deals Slots</h1>
-
   <div class="slot-container">
     <div class="slot-machine">
-      <div class="slot" id="slot1">
-        <img src="https://iili.io/2m5cdSp.jpg" alt="Slot 1" />
-      </div>
-      <div class="slot" id="slot2">
-        <img src="https://iili.io/2m5cdSp.jpg" alt="Slot 2" />
-      </div>
-      <div class="slot" id="slot3">
-        <img src="https://iili.io/2m5cdSp.jpg" alt="Slot 3" />
-      </div>
+      <div class="slot" id="slot1"><img src="https://iili.io/2m5cdSp.jpg" alt="Slot 1" /></div>
+      <div class="slot" id="slot2"><img src="https://iili.io/2m5cdSp.jpg" alt="Slot 2" /></div>
+      <div class="slot" id="slot3"><img src="https://iili.io/2m5cdSp.jpg" alt="Slot 3" /></div>
     </div>
-
     <button id="spin-button">Spin</button>
-
     <div class="result" id="result"></div>
     <div class="confirmation-number" id="confirmation-number"></div>
   </div>
-
   <script>
-    // Slot symbols (all $5 winners for now)
-    const slotImages = [
-      "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card (Winner)
-      "https://iili.io/2m5ccib.jpg",  // $10 Gift Card (Non-Winner)
-      "https://iili.io/2m5lFrx.jpg"   // $50 Gift Card (Non-Winner)
-    ];
-
-    // Confirmation numbers for winners
+    const slotImages = ["https://iili.io/2m5cdSp.jpg", "https://iili.io/2m5ccib.jpg", "https://iili.io/2m5lFrx.jpg"];
     const confirmationNumbers = [
       45875664, 58761232, 87653099, 14589736, 1589536, 
       25796864, 28658901, 2040587, 32158964, 38561515, 
       71456611, 82547125, 94585477, 5161983, 2262007, 
       9232009, 4586652, 17565211, 25893455, 24751855
     ];
-
-    let winners = [];  // Track winners for the month
-
+    let winners = JSON.parse(localStorage.getItem('winners')) || [];
     document.getElementById("spin-button").addEventListener("click", spin);
 
     function spin() {
-      // Check if the player has already won today
       const playerId = getPlayerId();
-      const lastWinDate = localStorage.getItem(${playerId}_lastWinDate);
+      const lastWinDate = localStorage.getItem(`${playerId}_lastWinDate`);
       const todayDate = new Date().toISOString().slice(0, 10);
 
       if (lastWinDate === todayDate) {
         alert("You can only win once per day.");
         return;
       }
-
-      // If 20 winners have been selected, prevent further spinning
       if (winners.length >= 20) {
         alert("All 20 winners have been selected.");
         return;
       }
 
-      console.log("Spinning the slot machine!");
       document.getElementById('result').textContent = "Spinning...";
+      const slots = [document.getElementById('slot1'), document.getElementById('slot2'), document.getElementById('slot3')];
+      slots.forEach(slot => slot.querySelector('img').style.transform = "rotate(360deg)");
 
-      // Reset the spins
-      const slot1 = document.getElementById('slot1');
-      const slot2 = document.getElementById('slot2');
-      const slot3 = document.getElementById('slot3');
-
-      resetSlotImages([slot1, slot2, slot3]);
-
-      // Trigger the slot spin
       setTimeout(() => {
-        slot1.querySelector('img').style.transition = "transform 1s ease";
-        slot2.querySelector('img').style.transition = "transform 1s ease";
-        slot3.querySelector('img').style.transition = "transform 1s ease";
-
-        slot1.querySelector('img').style.transform = "rotate(360deg)";
-        slot2.querySelector('img').style.transform = "rotate(360deg)";
-        slot3.querySelector('img').style.transform = "rotate(360deg)";
-
-        // Randomly select slot images
-        setTimeout(() => {
-          slot1.querySelector('img').src = getRandomImage();
-          slot2.querySelector('img').src = getRandomImage();
-          slot3.querySelector('img').src = getRandomImage();
-
-          setTimeout(() => {
-            checkResult(playerId);
-          }, 1000);
-        }, 1000);
-      }, 500);
-    }
-
-    function resetSlotImages(slots) {
-      slots.forEach(slot => {
-        slot.querySelector('img').style.transition = "none";
-        slot.querySelector('img').style.transform = "rotate(0deg)";
-      });
+        slots.forEach(slot => slot.querySelector('img').src = getRandomImage());
+        setTimeout(() => checkResult(playerId), 1000);
+      }, 1000);
     }
 
     function getRandomImage() {
-      const nonWinnerImages = [
-        "https://iili.io/2m5ccib.jpg",  // $10 Gift Card
-        "https://iili.io/2m5lFrx.jpg"   // $50 Gift Card
-      ];
-
-      // Randomly choose between $5 or non-winner images
-      return Math.random() < 0.5 ? slotImages[0] : nonWinnerImages[Math.floor(Math.random() * nonWinnerImages.length)];
+      return Math.random() < 0.5 ? slotImages[0] : slotImages[Math.floor(Math.random() * 2) + 1];
     }
 
     function getPlayerId() {
-      // Generate a unique player ID (for demonstration, using random number)
       let playerId = localStorage.getItem('playerId');
       if (!playerId) {
         playerId = Math.floor(Math.random() * 1000000);
@@ -190,27 +76,15 @@
     }
 
     function checkResult(playerId) {
-      const slot1 = document.getElementById('slot1').querySelector('img').src;
-      const slot2 = document.getElementById('slot2').querySelector('img').src;
-      const slot3 = document.getElementById('slot3').querySelector('img').src;
-
-      // Check for a win: All three slots must show the same $5 winner
-      if (slot1 === slot2 && slot2 === slot3 && slot1.includes("2m5cdSp")) {
+      const slots = [document.getElementById('slot1').querySelector('img').src, document.getElementById('slot2').querySelector('img').src, document.getElementById('slot3').querySelector('img').src];
+      if (slots.every(src => src.includes("2m5cdSp"))) {
         if (winners.length < 20) {
           let confirmationNumber = confirmationNumbers[winners.length];
           winners.push(confirmationNumber);
-
-          // Store the win date for this player
-          const todayDate = new Date().toISOString().slice(0, 10);
-          localStorage.setItem(${playerId}_lastWinDate, todayDate);
-
+          localStorage.setItem('winners', JSON.stringify(winners));
+          localStorage.setItem(`${playerId}_lastWinDate`, new Date().toISOString().slice(0, 10));
           document.getElementById('result').textContent = "You win!";
-          document.getElementById('confirmation-number').textContent = 
-            "Confirmation Number: " + confirmationNumber;
-
-          if (winners.length >= 20) {
-            alert("The 20 winners have been selected.");
-          }
+          document.getElementById('confirmation-number').textContent = "Confirmation Number: " + confirmationNumber;
         }
       } else {
         document.getElementById('result').textContent = "Try Again!";
@@ -218,6 +92,5 @@
       }
     }
   </script>
-
 </body>
 </html>
