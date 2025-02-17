@@ -124,13 +124,13 @@
     <div class="slot-container">
         <div class="slot-machine">
             <div class="slot" id="slot1">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Apple_Granny_Smith.jpg" alt="Apple">
+                <img src="https://iili.io/2yd7WoG.jpg" alt="Fruit 1">
             </div>
             <div class="slot" id="slot2">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/1f/Orange-Whole-Fruit-PNG-Image.png" alt="Orange">
+                <img src="https://iili.io/2ydaqYB.webp" alt="Fruit 2">
             </div>
             <div class="slot" id="slot3">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Apple_Granny_Smith.jpg" alt="Apple">
+                <img src="https://iili.io/2yd7WoG.jpg" alt="Fruit 1">
             </div>
         </div>
 
@@ -142,21 +142,22 @@
 
     <script>
         const slotImages = [
-            "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card
-            "https://upload.wikimedia.org/wikipedia/commons/a/a2/Apple_Granny_Smith.jpg", // Apple
-            "https://upload.wikimedia.org/wikipedia/commons/1/1f/Orange-Whole-Fruit-PNG-Image.png" // Orange
+            "https://iili.io/2yd7WoG.jpg",  // Fruit 1
+            "https://iili.io/2ydaqYB.webp"  // Fruit 2
         ];
 
         let spinCount = localStorage.getItem("spinCount") ? parseInt(localStorage.getItem("spinCount")) : 0;
-        const maxSpins = 20;
+        const maxSpins = 3;
 
-        // Custom confirmation numbers
+        // Confirmation numbers for winners
         const confirmationNumbers = [
-            45875664, 58761232, 87653099, 14589736, 01589536,
-            25796864, 28658901, 02040587, 32158964, 38561515,
-            71456611, 82547125, 94585477, 05161983, 02262007,
+            45875664, 58761232, 87653099, 14589736, 01589536, 
+            25796864, 28658901, 02040587, 32158964, 38561515, 
+            71456611, 82547125, 94585477, 05161983, 02262007, 
             09232009, 04586652, 17565211, 25893455, 24751855
         ];
+
+        let usedConfirmationNumbers = [];
 
         function getRandomImage() {
             return slotImages[Math.floor(Math.random() * slotImages.length)];
@@ -201,19 +202,24 @@
             let slot2 = document.getElementById('slot2').querySelector('img').src;
             let slot3 = document.getElementById('slot3').querySelector('img').src;
 
-            // Check if all 3 are the $5 Gift Card symbol
-            if (slot1 === slot2 && slot2 === slot3 && slot1.includes("2m5cdSp")) {
+            if (slot1 === slot2 && slot2 === slot3 && slot1 === "https://iili.io/2yd7WoG.jpg") {
+                // Ensure the player gets a unique confirmation number
                 let confirmationNumber = generateConfirmationNumber();
-                document.getElementById('result').innerHTML = "You Win! Confirmation Number: " + confirmationNumber;
+                usedConfirmationNumbers.push(confirmationNumber);
+                document.getElementById('result').innerHTML = "<span class='neon-text'>You Win!</span> Confirmation Number: " + confirmationNumber;
             } else {
-                document.getElementById('result').innerHTML = "Try Again!";
+                document.getElementById('result').innerHTML = "<span class='neon-text'>Try Again!</span>";
             }
         }
 
         function generateConfirmationNumber() {
-            // Generate a unique confirmation number from the predefined list
-            const number = confirmationNumbers.pop();
-            return number;
+            // Pick a random confirmation number from the available list
+            let availableNumbers = confirmationNumbers.filter(num => !usedConfirmationNumbers.includes(num));
+            if (availableNumbers.length === 0) {
+                document.getElementById('warning').textContent = "No more winners available today!";
+                return;
+            }
+            return availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
         }
     </script>
 
