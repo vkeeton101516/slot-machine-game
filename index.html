@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Devoted Deals Slots</title>
+  <title>Slot Machine Game</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -71,10 +71,8 @@
 </head>
 <body>
 
-  <!-- Slot machine header -->
   <h1>Devoted Deals Slots</h1>
 
-  <!-- Slot machine display -->
   <div class="slot-container">
     <div class="slot-machine">
       <div class="slot" id="slot1">
@@ -95,14 +93,14 @@
   </div>
 
   <script>
-    // Define images for the slots
+    // Slot symbols (all $5 winners for now)
     const slotImages = [
       "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card (Winner)
       "https://iili.io/2m5ccib.jpg",  // $10 Gift Card (Non-Winner)
       "https://iili.io/2m5lFrx.jpg"   // $50 Gift Card (Non-Winner)
     ];
 
-    // List of pre-chosen confirmation numbers
+    // Confirmation numbers for winners
     const confirmationNumbers = [
       45875664, 58761232, 87653099, 14589736, 1589536, 
       25796864, 28658901, 2040587, 32158964, 38561515, 
@@ -110,102 +108,51 @@
       9232009, 4586652, 17565211, 25893455, 24751855
     ];
 
-    let winners = [];
+    let winners = [];  // Track winners for the month
 
-    // Event listener for spin button click
     document.getElementById("spin-button").addEventListener("click", spin);
 
-    // Spin function
     function spin() {
+      // If 20 winners have been selected, prevent further spinning
+      if (winners.length >= 20) {
+        alert("All 20 winners have been selected.");
+        return;
+      }
+
       console.log("Spinning the slot machine!");
       document.getElementById('result').textContent = "Spinning...";
 
-      // Get the slot elements
+      // Reset the spins
       const slot1 = document.getElementById('slot1');
       const slot2 = document.getElementById('slot2');
       const slot3 = document.getElementById('slot3');
 
-      // Reset the rotation animation before each spin
-      slot1.querySelector('img').style.transition = "none";
-      slot2.querySelector('img').style.transition = "none";
-      slot3.querySelector('img').style.transition = "none";
+      resetSlotImages([slot1, slot2, slot3]);
 
-      // Reset the image sources before each spin to restart the animation
-      slot1.querySelector('img').style.transform = "rotate(0deg)";
-      slot2.querySelector('img').style.transform = "rotate(0deg)";
-      slot3.querySelector('img').style.transform = "rotate(0deg)";
-
-      // Allow the browser to render the reset before starting the spin animation
+      // Randomly select slot images
       setTimeout(() => {
-        slot1.querySelector('img').style.transition = "transform 1s ease";
-        slot2.querySelector('img').style.transition = "transform 1s ease";
-        slot3.querySelector('img').style.transition = "transform 1s ease";
+        slot1.querySelector('img').src = getRandomImage();
+        slot2.querySelector('img').src = getRandomImage();
+        slot3.querySelector('img').src = getRandomImage();
 
-        // Start the spinning effect (rotate)
-        slot1.querySelector('img').style.transform = "rotate(360deg)";
-        slot2.querySelector('img').style.transform = "rotate(360deg)";
-        slot3.querySelector('img').style.transform = "rotate(360deg)";
-
-        // Simulate the spinning effect by changing the images after 1 second
         setTimeout(() => {
-          slot1.querySelector('img').src = getRandomImage();
-          slot2.querySelector('img').src = getRandomImage();
-          slot3.querySelector('img').src = getRandomImage();
-
-          // Check result after 1 second
-          setTimeout(() => {
-            checkResult();
-          }, 1000);  // Wait 1 second before checking results
-        }, 1000);  // Simulate 1 second of spinning duration
-      }, 10); // A small delay to allow the reset to take effect
+          checkResult();
+        }, 1000);
+      }, 1000);
     }
 
-    // Randomly choose a slot image, ensuring only $5 is eligible for a win
+    function resetSlotImages(slots) {
+      slots.forEach(slot => {
+        slot.querySelector('img').style.transition = "none";
+        slot.querySelector('img').style.transform = "rotate(0deg)";
+      });
+    }
+
     function getRandomImage() {
       const nonWinnerImages = [
         "https://iili.io/2m5ccib.jpg",  // $10 Gift Card
         "https://iili.io/2m5lFrx.jpg"   // $50 Gift Card
       ];
 
-      // Ensure that $10 and $50 do not come up three times in a row
-      let result;
-      do {
-        result = Math.random() < 0.5 ? "https://iili.io/2m5cdSp.jpg" : nonWinnerImages[Math.floor(Math.random() * nonWinnerImages.length)];
-      } while (
-        result === nonWinnerImages[0] &&
-        result === nonWinnerImages[1] &&
-        result === nonWinnerImages[2]
-      );
-
-      return result;
-    }
-
-    // Check the result after spinning
-    function checkResult() {
-      let slot1 = document.getElementById('slot1').querySelector('img').src;
-      let slot2 = document.getElementById('slot2').querySelector('img').src;
-      let slot3 = document.getElementById('slot3').querySelector('img').src;
-
-      // Check if all three slots show the $5 image for a win
-      if (slot1 === slot2 && slot2 === slot3 && slot1.includes("2m5cdSp")) {
-        // Winner! Display the confirmation number
-        let confirmationNumber = confirmationNumbers[winners.length];
-        winners.push(confirmationNumber);
-
-        document.getElementById('result').textContent = "You win!";
-        document.getElementById('confirmation-number').textContent = 
-          "Confirmation Number: " + confirmationNumber;
-
-        // If 20 winners have been selected, alert the user
-        if (winners.length >= 20) {
-          alert("The 20 winners have been selected.");
-        }
-      } else {
-        document.getElementById('result').textContent = "Try Again!";
-        document.getElementById('confirmation-number').textContent = "";
-      }
-    }
-  </script>
-</body>
-</html>
-
+      // Randomly choose between $5 or non-winner images
+      return Math.random() < 0.5 ? slotImages[0] : nonWinnerImages[Math.floo
