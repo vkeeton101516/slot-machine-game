@@ -107,9 +107,9 @@
 
     <div class="slot-container">
         <div class="slot-machine">
-            <div class="slot" id="slot1"></div>
-            <div class="slot" id="slot2"></div>
-            <div class="slot" id="slot3"></div>
+            <div class="slot" id="slot1"><img src="" alt="Slot Image"></div>
+            <div class="slot" id="slot2"><img src="" alt="Slot Image"></div>
+            <div class="slot" id="slot3"><img src="" alt="Slot Image"></div>
         </div>
 
         <button class="spin-button" onclick="spin()">Spin</button>
@@ -119,28 +119,24 @@
     </div>
 
     <script>
-        // Track the number of spins and wins
-        let spinCount = parseInt(localStorage.getItem('spinCount')) || 0;
-        let winnersThisMonth = parseInt(localStorage.getItem('winnersThisMonth')) || 0;
+        const slotImages = [
+            "https://iili.io/2m5cdSp.jpg"  // $5 Gift Card (only this one will be shown)
+        ];
+
+        const confirmationNumbers = [
+            "45875664", "58761232", "87653099", "14589736", "01589536", 
+            "25796864", "28658901", "02040587", "32158964", "38561515", 
+            "71456611", "82547125", "94585477", "05161983", "02262007", 
+            "09232009", "04586652", "17565211", "25893455", "24751855"
+        ];
+
+        let usedConfirmationNumbers = JSON.parse(localStorage.getItem("usedConfirmationNumbers")) || [];
+        let spinCount = parseInt(localStorage.getItem("spinCount") || "0");
         const maxSpins = 5;
         const maxWinners = 20;
         const dailyLimitMessage = "You've reached your spin limit for today. Please come back tomorrow!";
 
-        // Your specific confirmation numbers (20 winners)
-        const confirmationNumbers = [
-            "45875664", "58761232", "87653099", "14589736", "01589536", "25796864", 
-            "28658901", "02040587", "32158964", "38561515", "71456611", "82547125", 
-            "94585477", "05161983", "02262007", "09232009", "04586652", "17565211", 
-            "25893455", "24751855"
-        ];
-
-        // Prize details (only $5 prize will be won)
-        const slotImages = [
-            "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card (only this one will be shown)
-        ];
-        const prizeAmount = 5; // $5 prize
-
-        // Function to disable the spin button if the player has reached their limit
+        // Check spin limit
         function checkSpinLimit() {
             if (spinCount >= maxSpins) {
                 document.querySelector('.spin-button').disabled = true;
@@ -150,7 +146,11 @@
             }
         }
 
-        // Function to handle the spin action
+        // Handle the spin action
         function spin() {
             if (spinCount >= maxSpins) {
-                document.getElementByI
+                document.getElementById('warning').textContent = "You have reached the weekly spin limit!";
+                return;
+            }
+
+            // Simulate the spin (always show 3 $5 cards
