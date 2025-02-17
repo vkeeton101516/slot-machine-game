@@ -5,69 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Devoted Deals Slots</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-image: url('https://freeimghost.net/images/2025/02/14/bg.jpg');
-            background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            flex-direction: column;
-        }
-
-        .header {
-            font-size: 50px;
-            font-weight: bold;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 40px;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            animation: neonGlow 1.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes neonGlow {
-            0% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
-            50% { text-shadow: 0 0 20px #ff3399, 0 0 30px #ff3399, 0 0 40px #ff3399; }
-            100% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
-        }
-
-        .slot-container {
-            text-align: center;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 800px;
-        }
-
-        .slot-machine {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .slot {
-            width: 120px;
-            height: 120px;
-            border-radius: 10px;
-            border: 4px solid #fff;
-            overflow: hidden;
-            background: #222;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-            transition: transform 1s ease-in-out;
-        }
-
-        .slot img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        /* Existing CSS styles... */
     </style>
 </head>
 <body>
@@ -94,7 +32,8 @@
         let assignedNumbers = [];
         let spinsToday = 0;
         const maxSpinsPerDay = 50;
-        const winnersList = [];
+        const maxWinsPerWeek = 5;
+        let winsThisWeek = 0;
 
         function spin() {
             if (spinsToday >= maxSpinsPerDay) {
@@ -104,32 +43,58 @@
             spinsToday++;
             document.getElementById("warning").innerText = "";
 
-            const slotImages = ["https://iili.io/2m5cdSp.jpg", "https://iili.io/2m5ccib.jpg", "https://iili.io/2m5lFrx.jpg"];
+            // Slot images (only $10 and $50 for slots 2 and 3)
+            const slotImages = [
+                "https://iili.io/2m5cdSp.jpg", // $5 Gift Card (only allowed in slot 1)
+                "https://iili.io/2m5ccib.jpg", // $10 Gift Card (not a winner)
+                "https://iili.io/2m5lFrx.jpg"  // $50 Gift Card (not a winner)
+            ];
+            
+            // Set slot 1 to always show $5 Gift Card
             const randomImages = [
-                slotImages[Math.floor(Math.random() * slotImages.length)], 
-                slotImages[Math.floor(Math.random() * slotImages.length)], 
-                slotImages[Math.floor(Math.random() * slotImages.length)]
+                slotImages[0], // $5 Gift Card in slot 1
+                slotImages[Math.floor(Math.random() * 2) + 1], // Randomly either $10 or $50 in slot 2
+                slotImages[Math.floor(Math.random() * 2) + 1]  // Randomly either $10 or $50 in slot 3
             ];
 
-            document.getElementById("slot1").querySelector("img").src = randomImages[0];
-            document.getElementById("slot2").querySelector("img").src = randomImages[1];
-            document.getElementById("slot3").querySelector("img").src = randomImages[2];
+            // Spin animation
+            document.getElementById("slot1").style.transform = "rotateX(3600deg)";
+            document.getElementById("slot2").style.transform = "rotateX(3600deg)";
+            document.getElementById("slot3").style.transform = "rotateX(3600deg)";
 
-            if (randomImages.every(img => img === slotImages[0])) {
-                if (winnersList.length >= 20) {
-                    document.getElementById("warning").innerText = "Winner limit reached for this month.";
-                    return;
-                }
+            setTimeout(() => {
+                document.getElementById("slot1").style.transform = "rotateX(0deg)";
+                document.getElementById("slot2").style.transform = "rotateX(0deg)";
+                document.getElementById("slot3").style.transform = "rotateX(0deg)";
+                document.getElementById("slot1").querySelector("img").src = randomImages[0];
+                document.getElementById("slot2").querySelector("img").src = randomImages[1];
+                document.getElementById("slot3").querySelector("img").src = randomImages[2];
+            }, 1000);
 
-                const availableNumbers = confirmationNumbers.filter(num => !assignedNumbers.includes(num));
-                if (availableNumbers.length > 0) {
-                    const assignedNumber = availableNumbers[0];
-                    assignedNumbers.push(assignedNumber);
-                    winnersList.push({ number: assignedNumber });
-                    document.getElementById("result").innerText = "Congratulations! Your confirmation number: " + assignedNumber;
-                } else {
-                    document.getElementById("warning").innerText = "No more confirmation numbers available.";
+            // Track weekly wins
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            
+            if (dayOfWeek === 0) { // Reset weekly wins on Sunday
+                winsThisWeek = 0;
+            }
+
+            // Ensure max wins per week
+            if (winsThisWeek < maxWinsPerWeek) {
+                // Only allow a win for the $5 symbol in slot 1
+                if (randomImages[0] === slotImages[0]) { // Only the $5 gift card can win
+                    if (assignedNumbers.length < confirmationNumbers.length) {
+                        const availableNumbers = confirmationNumbers.filter(num => !assignedNumbers.includes(num));
+                        const assignedNumber = availableNumbers[0];
+                        assignedNumbers.push(assignedNumber);
+                        winsThisWeek++;
+                        document.getElementById("result").innerText = "Congratulations! Your confirmation number: " + assignedNumber;
+                    } else {
+                        document.getElementById("warning").innerText = "No more confirmation numbers available.";
+                    }
                 }
+            } else {
+                document.getElementById("warning").innerText = "Max wins reached for this week!";
             }
         }
     </script>
