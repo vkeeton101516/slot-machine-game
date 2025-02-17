@@ -118,6 +118,8 @@
         }
 
         function spin() {
+            console.log("Spin triggered");
+
             if (spinCount >= maxSpins) {
                 document.getElementById('warning').textContent = "You have reached the daily spin limit!";
                 return;
@@ -134,26 +136,11 @@
 
             // Wait for the animation to complete before changing images
             setTimeout(() => {
+                console.log("Changing images after spin");
+
                 // Change the images after animation ends
                 slot1.innerHTML = <img src="${getRandomImage()}" alt="Slot Image">;
                 slot2.innerHTML = <img src="${getRandomImage()}" alt="Slot Image">;
                 slot3.innerHTML = <img src="${getRandomImage()}" alt="Slot Image">;
 
-                // Increment spin count and store it in localStorage
-                spinCount++;
-                localStorage.setItem("spinCount", spinCount);
-
-                // Reset animation class after images are updated
-                setTimeout(() => {
-                    slot1.classList.remove('spinning');
-                    slot2.classList.remove('spinning');
-                    slot3.classList.remove('spinning');
-                    checkResult();
-                }, 1000); // After 1 second (animation time)
-            }, 1000); // 1 second delay before images change
-        }
-
-        function checkResult() {
-            let slot1 = document.getElementById('slot1').querySelector('img')?.src;
-            let slot2 = document.getElementById('slot2').querySelector('img')?.src;
-            let slot3 = document.getElementById('slot3').querySelector('i
+                // Increment spin count and store it in localStorag
