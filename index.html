@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Devoted Deals Slots</title>
+  <title>Slot Machine</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -71,10 +71,8 @@
 </head>
 <body>
 
-  <!-- Slot machine header -->
   <h1>Devoted Deals Slots</h1>
 
-  <!-- Slot machine display -->
   <div class="slot-container">
     <div class="slot-machine">
       <div class="slot" id="slot1">
@@ -95,14 +93,12 @@
   </div>
 
   <script>
-    // Define images for the slots
     const slotImages = [
       "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card (Winner)
       "https://iili.io/2m5ccib.jpg",  // $10 Gift Card (Non-Winner)
       "https://iili.io/2m5lFrx.jpg"   // $50 Gift Card (Non-Winner)
     ];
 
-    // List of pre-chosen confirmation numbers
     const confirmationNumbers = [
       45875664, 58761232, 87653099, 14589736, 1589536, 
       25796864, 28658901, 2040587, 32158964, 38561515, 
@@ -112,10 +108,47 @@
 
     let winners = [];
 
-    // Event listener for spin button click
     document.getElementById("spin-button").addEventListener("click", spin);
 
-    // Check if the player has already won today
+    function spin() {
+      if (hasPlayerWonToday()) return;
+
+      console.log("Spinning the slot machine!");
+      document.getElementById('result').textContent = "Spinning...";
+
+      const slot1 = document.getElementById('slot1');
+      const slot2 = document.getElementById('slot2');
+      const slot3 = document.getElementById('slot3');
+
+      slot1.querySelector('img').style.transition = "none";
+      slot2.querySelector('img').style.transition = "none";
+      slot3.querySelector('img').style.transition = "none";
+
+      slot1.querySelector('img').style.transform = "rotate(0deg)";
+      slot2.querySelector('img').style.transform = "rotate(0deg)";
+      slot3.querySelector('img').style.transform = "rotate(0deg)";
+
+      setTimeout(() => {
+        slot1.querySelector('img').style.transition = "transform 1s ease";
+        slot2.querySelector('img').style.transition = "transform 1s ease";
+        slot3.querySelector('img').style.transition = "transform 1s ease";
+
+        slot1.querySelector('img').style.transform = "rotate(360deg)";
+        slot2.querySelector('img').style.transform = "rotate(360deg)";
+        slot3.querySelector('img').style.transform = "rotate(360deg)";
+
+        setTimeout(() => {
+          slot1.querySelector('img').src = getRandomImage();
+          slot2.querySelector('img').src = getRandomImage();
+          slot3.querySelector('img').src = getRandomImage();
+
+          setTimeout(() => {
+            checkResult();
+          }, 1000);
+        }, 1000);
+      }, 10);
+    }
+
     function hasPlayerWonToday() {
       const today = new Date().toDateString();
       const lastWinDate = localStorage.getItem("lastWinDate");
@@ -128,39 +161,12 @@
       return false;
     }
 
-    // Spin function
-    function spin() {
-      if (hasPlayerWonToday()) {
-        return; // Player can't spin again today
-      }
+    function getRandomImage() {
+      const nonWinnerImages = [
+        "https://iili.io/2m5ccib.jpg",  // $10 Gift Card
+        "https://iili.io/2m5lFrx.jpg"   // $50 Gift Card
+      ];
 
-      console.log("Spinning the slot machine!"); // Debugging line
-      document.getElementById('result').textContent = "Spinning...";
-
-      // Get the slot elements
-      const slot1 = document.getElementById('slot1');
-      const slot2 = document.getElementById('slot2');
-      const slot3 = document.getElementById('slot3');
-
-      // Reset the rotation animation before each spin
-      slot1.querySelector('img').style.transition = "none";
-      slot2.querySelector('img').style.transition = "none";
-      slot3.querySelector('img').style.transition = "none";
-
-      // Reset the image sources before each spin to restart the animation
-      slot1.querySelector('img').style.transform = "rotate(0deg)";
-      slot2.querySelector('img').style.transform = "rotate(0deg)";
-      slot3.querySelector('img').style.transform = "rotate(0deg)";
-
-      // Allow the browser to render the reset before starting the spin animation
-      setTimeout(() => {
-        slot1.querySelector('img').style.transition = "transform 1s ease";
-        slot2.querySelector('img').style.transition = "transform 1s ease";
-        slot3.querySelector('img').style.transition = "transform 1s ease";
-
-        // Start the spinning effect (rotate)
-        slot1.querySelector('img').style.transform = "rotate(360deg)";
-        slot2.querySelector('img').style.transform = "rotate(360deg)";
-        slot3.querySelector('img').style.transform = "rotate(360deg)";
-
-        console.log("Rotation starte
+      let result;
+      do {
+        result = Math.random() < 0.5 ? "https://iili.io/2m5cdSp.jpg" : nonWinnerImages[Math.floor(Math.random() * non
