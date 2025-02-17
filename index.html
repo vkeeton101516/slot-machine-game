@@ -113,6 +113,16 @@
     document.getElementById("spin-button").addEventListener("click", spin);
 
     function spin() {
+      // Check if the player has already won today
+      const playerId = getPlayerId();
+      const lastWinDate = localStorage.getItem(${playerId}_lastWinDate);
+      const todayDate = new Date().toISOString().slice(0, 10);
+
+      if (lastWinDate === todayDate) {
+        alert("You can only win once per day.");
+        return;
+      }
+
       // If 20 winners have been selected, prevent further spinning
       if (winners.length >= 20) {
         alert("All 20 winners have been selected.");
@@ -129,16 +139,27 @@
 
       resetSlotImages([slot1, slot2, slot3]);
 
-      // Randomly select slot images
+      // Trigger the slot spin
       setTimeout(() => {
-        slot1.querySelector('img').src = getRandomImage();
-        slot2.querySelector('img').src = getRandomImage();
-        slot3.querySelector('img').src = getRandomImage();
+        slot1.querySelector('img').style.transition = "transform 1s ease";
+        slot2.querySelector('img').style.transition = "transform 1s ease";
+        slot3.querySelector('img').style.transition = "transform 1s ease";
 
+        slot1.querySelector('img').style.transform = "rotate(360deg)";
+        slot2.querySelector('img').style.transform = "rotate(360deg)";
+        slot3.querySelector('img').style.transform = "rotate(360deg)";
+
+        // Randomly select slot images
         setTimeout(() => {
-          checkResult();
+          slot1.querySelector('img').src = getRandomImage();
+          slot2.querySelector('img').src = getRandomImage();
+          slot3.querySelector('img').src = getRandomImage();
+
+          setTimeout(() => {
+            checkResult(playerId);
+          }, 1000);
         }, 1000);
-      }, 1000);
+      }, 500);
     }
 
     function resetSlotImages(slots) {
@@ -155,4 +176,48 @@
       ];
 
       // Randomly choose between $5 or non-winner images
-      return Math.random() < 0.5 ? slotImages[0] : nonWinnerImages[Math.floo
+      return Math.random() < 0.5 ? slotImages[0] : nonWinnerImages[Math.floor(Math.random() * nonWinnerImages.length)];
+    }
+
+    function getPlayerId() {
+      // Generate a unique player ID (for demonstration, using random number)
+      let playerId = localStorage.getItem('playerId');
+      if (!playerId) {
+        playerId = Math.floor(Math.random() * 1000000);
+        localStorage.setItem('playerId', playerId);
+      }
+      return playerId;
+    }
+
+    function checkResult(playerId) {
+      const slot1 = document.getElementById('slot1').querySelector('img').src;
+      const slot2 = document.getElementById('slot2').querySelector('img').src;
+      const slot3 = document.getElementById('slot3').querySelector('img').src;
+
+      // Check for a win: All three slots must show the same $5 winner
+      if (slot1 === slot2 && slot2 === slot3 && slot1.includes("2m5cdSp")) {
+        if (winners.length < 20) {
+          let confirmationNumber = confirmationNumbers[winners.length];
+          winners.push(confirmationNumber);
+
+          // Store the win date for this player
+          const todayDate = new Date().toISOString().slice(0, 10);
+          localStorage.setItem(${playerId}_lastWinDate, todayDate);
+
+          document.getElementById('result').textContent = "You win!";
+          document.getElementById('confirmation-number').textContent = 
+            "Confirmation Number: " + confirmationNumber;
+
+          if (winners.length >= 20) {
+            alert("The 20 winners have been selected.");
+          }
+        }
+      } else {
+        document.getElementById('result').textContent = "Try Again!";
+        document.getElementById('confirmation-number').textContent = "";
+      }
+    }
+  </script>
+
+</body>
+</html>
