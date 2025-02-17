@@ -217,14 +217,13 @@
                         document.getElementById('result').textContent = winnerMessage;
                         document.getElementById('confirmationNumber').textContent = `Confirmation Number: ${confirmationNumber}`;
                     } else {
-                        document.getElementById('result').textContent = "Sorry, no winners left this month.";
+                        document.getElementById('result').textContent = "Sorry, the monthly winners limit has been reached.";
                     }
                 } else {
-                    document.getElementById('result').textContent = "No match, try again!";
+                    document.getElementById('result').textContent = "No win. Try again!";
                 }
-            }, 3000); // 3 seconds for the spin to end
+            }, 3000); // Delay to match the animation duration
         }
     </script>
-
 </body>
 </html>
