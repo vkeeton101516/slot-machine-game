@@ -124,13 +124,13 @@
     <div class="slot-container">
         <div class="slot-machine">
             <div class="slot" id="slot1">
-                <img src="https://iili.io/2m5cdSp.jpg" alt="$5 Gift Card">
+                <img src="https://iili.io/2m5cdSp.jpg" alt="Pink $5 Gift Card">
             </div>
             <div class="slot" id="slot2">
-                <img src="https://iili.io/2m5ccib.jpg" alt="$10 Gift Card">
+                <img src="https://iili.io/2m5ccib.jpg" alt="Fruit Symbol">
             </div>
             <div class="slot" id="slot3">
-                <img src="https://iili.io/2m5lFrx.jpg" alt="$50 Gift Card">
+                <img src="https://iili.io/2m5lFrx.jpg" alt="Seven Symbol">
             </div>
         </div>
 
@@ -142,13 +142,13 @@
 
     <script>
         const slotImages = [
-            "https://iili.io/2m5cdSp.jpg",  // $5 Gift Card
-            "https://iili.io/2m5ccib.jpg",  // $10 Gift Card
-            "https://iili.io/2m5lFrx.jpg"   // $50 Gift Card
+            "https://iili.io/2m5cdSp.jpg",  // Pink $5 Gift Card (winning symbol)
+            "https://iili.io/2m5ccib.jpg",  // Fruit Symbol (non-winning)
+            "https://iili.io/2m5lFrx.jpg"   // Seven Symbol (non-winning)
         ];
 
         let spinCount = localStorage.getItem("spinCount") ? parseInt(localStorage.getItem("spinCount")) : 0;
-        const maxSpins = 25;
+        const maxSpins = 3;
         const maxWinsPerMonth = 20;  // Max wins per month
         let dailyWin = localStorage.getItem("dailyWin");  // Track if the user has won today
         const confirmationNumbers = [
@@ -206,7 +206,7 @@
             let slot2 = document.getElementById('slot2').querySelector('img').src;
             let slot3 = document.getElementById('slot3').querySelector('img').src;
 
-            // Ensure that only $5 gift cards can win (3 of the same $5 symbol)
+            // Check if all three slots have the winning $5 gift card symbol
             if (slot1 === slot2 && slot2 === slot3 && slot1.includes('2m5cdSp')) {
                 if (currentWinnerIndex < maxWinsPerMonth) {
                     let confirmationNumber = confirmationNumbers[currentWinnerIndex];
@@ -217,13 +217,7 @@
                     document.getElementById('result').innerHTML = "<span class='neon-text'>Sorry, no more wins for this month!</span>";
                 }
             } else {
-                // Prevent $10 or $50 symbols from appearing 3 times in all 3 slots
-                if ((slot1.includes('2m5ccib') && slot2.includes('2m5ccib') && slot3.includes('2m5ccib')) || 
-                    (slot1.includes('2m5lFrx') && slot2.includes('2m5lFrx') && slot3.includes('2m5lFrx'))) {
-                    document.getElementById('result').innerHTML = "<span class='neon-text'>Try Again!</span>";
-                } else {
-                    document.getElementById('result').innerHTML = "<span class='neon-text'>Try Again!</span>";
-                }
+                document.getElementById('result').innerHTML = "<span class='neon-text'>Try Again!</span>";
             }
         }
 
