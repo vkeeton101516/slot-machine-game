@@ -27,10 +27,47 @@ function checkSpinLimit() {
 
 // Function to handle the spin action
 function spin() {
-    // Check if the user has already won today
-    if (dailyWin) {
-        alert("You've already won today! Please come back tomorrow.");
+    if (spinCount >= maxSpins) {
+        document.getElementById('warning').textContent = "You have reached the weekly spin limit!";
         return;
+    }
+
+    let slotResults = ["$5", "$10", "$50"];
+    slotResults.sort(() => Math.random() - 0.5);
+
+    // Ensure "$10" and "$50" never appear in all three slots
+    if (slotResults[0] === "$10" && slotResults[1] === "$10") {
+        slotResults[2] = "$5";
+    }
+    if (slotResults[0] === "$50" && slotResults[1] === "$50") {
+        slotResults[2] = "$5";
+    }
+
+    // Map slot results to images
+    const slot1Image = slotImages[slotResults.indexOf("$5")];
+    const slot2Image = slotImages[slotResults.indexOf("$10")];
+    const slot3Image = slotImages[slotResults.indexOf("$50")];
+
+    // Update images for each slot
+    document.getElementById('slot1').querySelector('img').src = slot1Image;
+    document.getElementById('slot2').querySelector('img').src = slot2Image;
+    document.getElementById('slot3').querySelector('img').src = slot3Image;
+
+    // Increment the spin count
+    spinCount++;
+    localStorage.setItem("spinCount", spinCount);
+
+    // Update the result display
+    document.getElementById('result').textContent = You won a ${slotResults.join(", ")}!;
+
+    // Add confirmation number logic if necessary
+    const winner = confirmationNumbers[spinCount - 1];
+    if (winner) {
+        document.getElementById('result').textContent +=  Your confirmation number is: ${winner};
+        usedConfirmationNumbers.push(winner);
+        localStorage.setItem("usedConfirmationNumbers", JSON.stringify(usedConfirmationNumbers));
+    }
+
     }
 
     // Simulate the spin (always show 3 $5 cards for a win)
