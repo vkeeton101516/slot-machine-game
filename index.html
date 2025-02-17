@@ -157,4 +157,38 @@
             checkResult();
           }, 1000);  // Wait 1 second before checking results
         }, 1000);  // Simulate 1 second of spinning duration
-      }, 10); // A small
+      }, 10); // A small delay to allow the reset to take effect
+    }
+
+    // Randomly choose a slot image
+    function getRandomImage() {
+      return slotImages[Math.floor(Math.random() * slotImages.length)];
+    }
+
+    // Check the result after spinning
+    function checkResult() {
+      let slot1 = document.getElementById('slot1').querySelector('img').src;
+      let slot2 = document.getElementById('slot2').querySelector('img').src;
+      let slot3 = document.getElementById('slot3').querySelector('img').src;
+
+      if (slot1 === slot2 && slot2 === slot3 && slot1.includes("2m5cdSp")) {
+        // Winner! Display the confirmation number
+        let confirmationNumber = confirmationNumbers[winners.length];
+        winners.push(confirmationNumber);
+
+        document.getElementById('result').textContent = "You win!";
+        document.getElementById('confirmation-number').textContent = 
+          "Confirmation Number: " + confirmationNumber;
+
+        // If 20 winners have been selected, alert the user
+        if (winners.length >= 20) {
+          alert("The 20 winners have been selected.");
+        }
+      } else {
+        document.getElementById('result').textContent = "Try Again!";
+        document.getElementById('confirmation-number').textContent = "";
+      }
+    }
+  </script>
+</body>
+</html>
