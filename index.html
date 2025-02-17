@@ -111,10 +111,7 @@
     let winners = [];
     let spinCount = 0;
 
-    function getRandomImage() {
-      return slotImages[Math.floor(Math.random() * slotImages.length)];
-    }
-
+    // Spin function
     function spin() {
       if (spinCount >= 10) {
         alert("You have reached the daily spin limit!");
@@ -147,6 +144,12 @@
       }, 1000);
     }
 
+    // Helper function to get a random slot image
+    function getRandomImage() {
+      return slotImages[Math.floor(Math.random() * slotImages.length)];
+    }
+
+    // Check if the result is a win
     function checkResult() {
       let slot1 = document.getElementById('slot1').querySelector('img').src;
       let slot2 = document.getElementById('slot2').querySelector('img').src;
@@ -165,5 +168,4 @@
           alert("The 20 winners have been selected.");
         }
       } else {
-        document.getElementById('result').textContent = "Try Again!";
-        document.getElementById('confirmation-nu
+        doc
