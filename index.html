@@ -12,109 +12,15 @@
     <div class="slot-container">
         <div class="slot-machine">
             <div class="slot"><img id="slot1" src="https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg" alt="Slot"></div>
-            <div class="slot"><img id="slot2" src="https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg" alt="Slot"></div>
-            <div class="slot"><img id="slot3" src="https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg" alt="Slot"></div>
+            <div class="slot"><img id="slot2" src="https://i.postimg.cc/yxXXpZvZ/depositphotos-159290092-stock-illustration-slot-machine-seven-icon-color.webp" alt="Slot"></div>
+            <div class="slot"><img id="slot3" src="https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg" alt="Slot"></div>
         </div>
         <button class="spin-button" onclick="spin()">Spin</button>
         <div class="result" id="result"></div>
-        <div class="confirmation-number" id="confirmationNumber"></div>
         <div class="warning" id="warning"></div>
     </div>
 
-    <script>
-        const slotImages = [
-            "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg",
-            "https://i.postimg.cc/yxXXpZvZ/depositphotos-159290092-stock-illustration-slot-machine-seven-icon-color.webp",
-            "https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg"
-        ];
+    <script src="script.js"></script>
 
-        const confirmationNumbers = [
-            "45875664", "58761232", "87653099", "14589736", "01589536",
-            "25796864", "28658901", "02040587", "32158964", "38561515",
-            "71456611", "82547125", "94585477", "05161983", "02262007",
-            "09232009", "04586652", "17565211", "25893455", "24751855"
-        ];
-
-        let spinCount = parseInt(localStorage.getItem("spinCount")) || 0;
-        const maxSpins = 5;
-        let monthlyWinners = parseInt(localStorage.getItem("monthlyWinners")) || 0;
-        const maxWinners = 20;
-        let winnerIndices = JSON.parse(localStorage.getItem("winnerIndices")) || [];
-
-        function preloadImages() {
-            slotImages.forEach(src => {
-                const img = new Image();
-                img.src = src;
-            });
-        }
-
-        preloadImages();
-
-        function getRandomImage() {
-            const randomIndex = Math.floor(Math.random() * slotImages.length);
-            return slotImages[randomIndex];
-        }
-
-        function getRandomConfirmationNumber() {
-            const availableNumbers = confirmationNumbers.filter(number => !winnerIndices.includes(number));
-            if (availableNumbers.length === 0) {
-                return null;
-            }
-            const randomIndex = Math.floor(Math.random() * availableNumbers.length);
-            const confirmationNumber = availableNumbers[randomIndex];
-            winnerIndices.push(confirmationNumber);
-            localStorage.setItem("winnerIndices", JSON.stringify(winnerIndices));
-            return confirmationNumber;
-        }
-
-        function spin() {
-            if (spinCount >= maxSpins) {
-                document.getElementById('warning').textContent = "You have reached the daily spin limit!";
-                return;
-            }
-
-            if (monthlyWinners >= maxWinners) {
-                document.getElementById('warning').textContent = "The monthly winner limit has been reached.";
-                return;
-            }
-
-            let slot1 = document.getElementById('slot1');
-            let slot2 = document.getElementById('slot2');
-            let slot3 = document.getElementById('slot3');
-
-            slot1.style.animation = 'none';
-            slot2.style.animation = 'none';
-            slot3.style.animation = 'none';
-
-            slot1.offsetHeight; 
-            slot2.offsetHeight;
-            slot3.offsetHeight;
-
-            slot1.style.animation = 'spin360 2s ease-in-out';
-            slot2.style.animation = 'spin360 2s ease-in-out';
-            slot3.style.animation = 'spin360 2s ease-in-out';
-
-            slot1.src = getRandomImage();
-            slot2.src = getRandomImage();
-            slot3.src = getRandomImage();
-
-            spinCount++;
-            localStorage.setItem("spinCount", spinCount);
-
-            if (slot1.src === slot2.src && slot2.src === slot3.src && slot1.src === slotImages[0]) {
-                let confirmationNumber = getRandomConfirmationNumber();
-                if (confirmationNumber) {
-                    monthlyWinners++;
-                    localStorage.setItem("monthlyWinners", monthlyWinners);
-                    document.getElementById('result').textContent = "You win!";
-                    document.getElementById('confirmationNumber').textContent = "Confirmation Number: " + confirmationNumber;
-                }
-            } else {
-                document.getElementById('result').textContent = "Try Again!";
-                document.getElementById('confirmationNumber').textContent = "";
-            }
-        }
-    </script>
-<script src="script.js"></script>
 </body>
 </html>
