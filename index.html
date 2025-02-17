@@ -97,6 +97,11 @@
             color: #ffeb3b;
             margin-top: 10px;
         }
+
+        @keyframes spinAnimation {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-360px); }
+        }
     </style>
 </head>
 <body>
@@ -173,11 +178,22 @@
             let slot2 = document.getElementById('slot2');
             let slot3 = document.getElementById('slot3');
 
-            // Apply spinning animation and update images
+            // Reset animation
+            slot1.style.animation = 'none';
+            slot2.style.animation = 'none';
+            slot3.style.animation = 'none';
+
+            // Force reflow/repaint to restart the animation
+            slot1.offsetHeight; // trigger reflow
+            slot2.offsetHeight;
+            slot3.offsetHeight;
+
+            // Apply spinning animation again
             slot1.style.animation = 'spinAnimation 3s ease-out';
             slot2.style.animation = 'spinAnimation 3s ease-out';
             slot3.style.animation = 'spinAnimation 3s ease-out';
 
+            // Update images after animation start
             slot1.src = getRandomImage();
             slot2.src = getRandomImage();
             slot3.src = getRandomImage();
