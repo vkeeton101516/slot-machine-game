@@ -115,8 +115,25 @@
     // Event listener for spin button click
     document.getElementById("spin-button").addEventListener("click", spin);
 
+    // Check if the player has already won today
+    function hasPlayerWonToday() {
+      const today = new Date().toDateString();
+      const lastWinDate = localStorage.getItem("lastWinDate");
+
+      if (lastWinDate === today) {
+        alert("You have already won today! Try again tomorrow.");
+        return true;
+      }
+
+      return false;
+    }
+
     // Spin function
     function spin() {
+      if (hasPlayerWonToday()) {
+        return; // Player can't spin again today
+      }
+
       console.log("Spinning the slot machine!");
       document.getElementById('result').textContent = "Spinning...";
 
@@ -146,14 +163,4 @@
         slot2.querySelector('img').style.transform = "rotate(360deg)";
         slot3.querySelector('img').style.transform = "rotate(360deg)";
 
-        // Simulate the spinning effect by changing the images after 1 second
-        setTimeout(() => {
-          slot1.querySelector('img').src = getRandomImage();
-          slot2.querySelector('img').src = getRandomImage();
-          slot3.querySelector('img').src = getRandomImage();
-
-          // Check result after 1 second
-          setTimeout(() => {
-            checkResult();
-          }, 1000);  // Wait 1 second before checking results
-        }, 1000);  // Simulate 1 second of spinnin
+        // Simulate the spinning effect by changing th
