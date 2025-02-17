@@ -60,13 +60,25 @@
             overflow: hidden;
             background: #222;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-            transition: transform 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .slot img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 1s ease-in-out;
+        }
+
+        .spinning img {
+            animation: spinEffect 1s ease-in-out infinite;
+        }
+
+        @keyframes spinEffect {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(1080deg); }
         }
 
         .spin-button {
@@ -99,41 +111,43 @@
             font-weight: bold;
             margin-top: 15px;
         }
-
-        /* Smooth spinning effect */
-        @keyframes spinEffect {
-            0% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(360deg) scale(1.1); }
-            100% { transform: rotate(720deg) scale(1); }
-        }
-
-        .spinning {
-            animation: spinEffect 1.5s ease-in-out;
-        }
     </style>
 </head>
 <body>
 
     <div class="header">Devoted Deals Slots</div>
+
     <div class="slot-container">
         <div class="slot-machine">
             <div class="slot" id="slot1"><img src="https://iili.io/2yd7WoG.jpg" alt="Fruit 1"></div>
             <div class="slot" id="slot2"><img src="https://iili.io/2ydaqYB.webp" alt="Fruit 2"></div>
             <div class="slot" id="slot3"><img src="https://iili.io/2yd7WoG.jpg" alt="Fruit 1"></div>
         </div>
+
         <button class="spin-button" onclick="spin()">Spin</button>
+
         <div class="result" id="result"></div>
         <div class="warning" id="warning"></div>
     </div>
 
     <script>
         function spin() {
-            let slots = document.querySelectorAll('.slot img');
-            slots.forEach(slot => slot.parentElement.classList.add('spinning'));
+            let slots = document.querySelectorAll('.slot');
+            slots.forEach(slot => slot.classList.add('spinning'));
             setTimeout(() => {
-                slots.forEach(slot => slot.parentElement.classList.remove('spinning'));
-                checkResult();
-            }, 1500);
+                slots.forEach(slot => slot.classList.remove('spinning'));
+                updateSlots();
+            }, 1000);
+        }
+
+        function updateSlots() {
+            const slotImages = [
+                "https://iili.io/2yd7WoG.jpg",
+                "https://iili.io/2ydaqYB.webp"
+            ];
+            document.getElementById('slot1').querySelector('img').src = slotImages[Math.floor(Math.random() * slotImages.length)];
+            document.getElementById('slot2').querySelector('img').src = slotImages[Math.floor(Math.random() * slotImages.length)];
+            document.getElementById('slot3').querySelector('img').src = slotImages[Math.floor(Math.random() * slotImages.length)];
         }
     </script>
 
