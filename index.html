@@ -142,12 +142,12 @@
 
     <script>
         const slotImages = [
-            "https://iili.io/2yd7WoG.jpg",  // Fruit 1
-            "https://iili.io/2ydaqYB.webp"  // Fruit 2
+            "https://iili.io/2yd7WoG.jpg",  // Cherry (Winning Symbol)
+            "https://iili.io/2ydaqYB.webp"  // Fruit (Non-winning Symbol)
         ];
 
         let spinCount = localStorage.getItem("spinCount") ? parseInt(localStorage.getItem("spinCount")) : 0;
-        const maxSpins = 50;
+        const maxSpins = 3;
 
         // Confirmation numbers for winners
         const confirmationNumbers = [
@@ -158,6 +158,8 @@
         ];
 
         let usedConfirmationNumbers = [];
+        let totalWins = localStorage.getItem("totalWins") ? parseInt(localStorage.getItem("totalWins")) : 0;
+        const maxTotalWins = 20;
 
         function getRandomImage() {
             return slotImages[Math.floor(Math.random() * slotImages.length)];
@@ -166,6 +168,11 @@
         function spin() {
             if (spinCount >= maxSpins) {
                 document.getElementById('warning').textContent = "You have reached the daily spin limit!";
+                return;
+            }
+
+            if (totalWins >= maxTotalWins) {
+                document.getElementById('warning').textContent = "All wins have been claimed for this month!";
                 return;
             }
 
@@ -202,10 +209,13 @@
             let slot2 = document.getElementById('slot2').querySelector('img').src;
             let slot3 = document.getElementById('slot3').querySelector('img').src;
 
+            // Only 3 cherry symbols trigger a win
             if (slot1 === slot2 && slot2 === slot3 && slot1 === "https://iili.io/2yd7WoG.jpg") {
                 // Ensure the player gets a unique confirmation number
                 let confirmationNumber = generateConfirmationNumber();
                 usedConfirmationNumbers.push(confirmationNumber);
+                totalWins++;
+                localStorage.setItem("totalWins", totalWins); // Store updated total wins
                 document.getElementById('result').innerHTML = "<span class='neon-text'>You Win!</span> Confirmation Number: " + confirmationNumber;
             } else {
                 document.getElementById('result').innerHTML = "<span class='neon-text'>Try Again!</span>";
