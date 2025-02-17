@@ -39,19 +39,20 @@ body {
   transition: transform 0.5s ease;
 }
 
-#spin-button {
-  background-color: #f00;
-  color: #fff;
-  font-size: 20px;
-  padding: 10px 20px;
-  border: none;
+button { 
+  font-size: 20px; 
+  padding: 10px 20px; 
+  cursor: pointer; 
+  background-color: hotpink; 
+  border: none; 
   border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  color: white;
+  font-weight: bold;
+  transition: background 0.3s ease;
 }
-
-#spin-button:hover {
-  background-color: #ff0;
+button:hover {
+  background-color: deeppink;
+}
 }
 
 #result {
