@@ -148,7 +148,7 @@
         ];
 
         let spinCount = localStorage.getItem("spinCount") ? parseInt(localStorage.getItem("spinCount")) : 0;
-        const maxSpins = 20;
+        const maxSpins = 25;
         const maxWinsPerMonth = 20;  // Max wins per month
         let dailyWin = localStorage.getItem("dailyWin");  // Track if the user has won today
         const confirmationNumbers = [
@@ -218,10 +218,8 @@
                 }
             } else {
                 // Prevent $10 or $50 symbols from appearing 3 times in all 3 slots
-                let allSymbols = [slot1, slot2, slot3];
-                let isThreeOfSame = (symbol) => allSymbols.filter(img => img.includes(symbol)).length === 3;
-
-                if (isThreeOfSame('2m5ccib') || isThreeOfSame('2m5lFrx')) {
+                if ((slot1.includes('2m5ccib') && slot2.includes('2m5ccib') && slot3.includes('2m5ccib')) || 
+                    (slot1.includes('2m5lFrx') && slot2.includes('2m5lFrx') && slot3.includes('2m5lFrx'))) {
                     document.getElementById('result').innerHTML = "<span class='neon-text'>Try Again!</span>";
                 } else {
                     document.getElementById('result').innerHTML = "<span class='neon-text'>Try Again!</span>";
