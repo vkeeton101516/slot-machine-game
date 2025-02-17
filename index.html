@@ -133,6 +133,16 @@
         const maxWinners = 20;
         let winnerIndices = JSON.parse(localStorage.getItem("winnerIndices")) || [];
 
+        // Preload images
+        function preloadImages() {
+            slotImages.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        }
+
+        preloadImages();
+
         function getRandomImage() {
             return slotImages[Math.floor(Math.random() * slotImages.length)];
         }
@@ -200,6 +210,5 @@
             }
         }
     </script>
-
 </body>
 </html>
