@@ -97,9 +97,9 @@
     <div class="header">Devoted Deals Slots</div>
     <div class="slot-container">
         <div class="slot-machine">
-            <div class="slot"><img id="slot1" src="https://iili.io/2yd7WoG.jpg" alt="Slot"></div>
-            <div class="slot"><img id="slot2" src="https://iili.io/2yd7WoG.jpg" alt="Slot"></div>
-            <div class="slot"><img id="slot3" src="https://iili.io/2yd7WoG.jpg" alt="Slot"></div>
+            <div class="slot"><img id="slot1" src="https://via.placeholder.com/120x120.png?text=Cherry" alt="Slot"></div>
+            <div class="slot"><img id="slot2" src="https://via.placeholder.com/120x120.png?text=Cherry" alt="Slot"></div>
+            <div class="slot"><img id="slot3" src="https://via.placeholder.com/120x120.png?text=Cherry" alt="Slot"></div>
         </div>
         <button class="spin-button" onclick="spin()">Spin</button>
         <div class="result" id="result"></div>
@@ -108,8 +108,8 @@
 
     <script>
         const slotImages = [
-            "https://iili.io/2yd7WoG.jpg", // Cherry
-            "https://iili.io/2ydaqYB.webp" // Non-winning symbol
+            "https://via.placeholder.com/120x120.png?text=Cherry", // Cherry
+            "https://via.placeholder.com/120x120.png?text=Non-Winner" // Non-winning symbol
         ];
         let spinCount = parseInt(localStorage.getItem("spinCount")) || 0;
         const maxSpins = 5;
@@ -163,7 +163,7 @@
         }
 
         function checkResult(images) {
-            if (images[0] === images[1] && images[1] === images[2] && images[0] === "https://iili.io/2yd7WoG.jpg") {
+            if (images[0] === images[1] && images[1] === images[2] && images[0] === "https://via.placeholder.com/120x120.png?text=Cherry") {
                 document.getElementById('result').innerHTML = "<span style='color: yellow;'>You Win! Your Confirmation Number: 45875664</span>";
                 monthlyWinners++;
                 localStorage.setItem("monthlyWinners", monthlyWinners);
