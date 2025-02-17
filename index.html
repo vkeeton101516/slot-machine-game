@@ -16,6 +16,7 @@
             margin: 0;
             flex-direction: column;
         }
+
         .header {
             font-size: 50px;
             font-weight: bold;
@@ -26,11 +27,13 @@
             letter-spacing: 5px;
             animation: neonGlow 1.5s ease-in-out infinite alternate;
         }
+
         @keyframes neonGlow {
             0% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
             50% { text-shadow: 0 0 20px #ff3399, 0 0 30px #ff3399, 0 0 40px #ff3399; }
             100% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
         }
+
         .slot-container {
             text-align: center;
             background: rgba(0, 0, 0, 0.7);
@@ -40,6 +43,7 @@
             width: 90%;
             max-width: 800px;
         }
+
         .slot-machine {
             display: flex;
             justify-content: center;
@@ -47,6 +51,7 @@
             gap: 15px;
             margin-bottom: 30px;
         }
+
         .slot {
             width: 120px;
             height: 120px;
@@ -57,11 +62,13 @@
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
             transition: transform 1s ease-in-out;
         }
+
         .slot img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
         .spin-button {
             padding: 15px 30px;
             background: linear-gradient(135deg, #ff66b2, #ff3399);
@@ -73,79 +80,62 @@
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
             transition: all 0.3s ease;
         }
+
         .spin-button:hover {
             background: linear-gradient(135deg, #ff3385, #ff80b3);
             transform: scale(1.1);
         }
+
         .result {
             margin-top: 20px;
             font-size: 28px;
             color: #fff;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
         }
+
         .warning {
             color: red;
             font-size: 20px;
             font-weight: bold;
             margin-top: 15px;
         }
+
+        /* Smooth spinning effect */
+        @keyframes spinEffect {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(360deg) scale(1.1); }
+            100% { transform: rotate(720deg) scale(1); }
+        }
+
+        .spinning {
+            animation: spinEffect 1.5s ease-in-out;
+        }
     </style>
 </head>
 <body>
+
     <div class="header">Devoted Deals Slots</div>
     <div class="slot-container">
         <div class="slot-machine">
-            <div class="slot" id="slot1"></div>
-            <div class="slot" id="slot2"></div>
-            <div class="slot" id="slot3"></div>
+            <div class="slot" id="slot1"><img src="https://iili.io/2yd7WoG.jpg" alt="Fruit 1"></div>
+            <div class="slot" id="slot2"><img src="https://iili.io/2ydaqYB.webp" alt="Fruit 2"></div>
+            <div class="slot" id="slot3"><img src="https://iili.io/2yd7WoG.jpg" alt="Fruit 1"></div>
         </div>
         <button class="spin-button" onclick="spin()">Spin</button>
         <div class="result" id="result"></div>
         <div class="warning" id="warning"></div>
     </div>
+
     <script>
-        const slotImages = [
-            "https://iili.io/2yd7WoG.jpg", // Winning symbol
-            "https://iili.io/2ydaqYB.webp"  // Non-winning symbol
-        ];
-        let spinCount = localStorage.getItem("spinCount") ? parseInt(localStorage.getItem("spinCount")) : 0;
-        const maxSpins = 5;
-        let totalWinners = JSON.parse(localStorage.getItem("totalWinners")) || [];
-        const maxWinnersPerWeek = 5;
-        function getRandomImage() {
-            return Math.random() < 0.15 ? slotImages[0] : slotImages[1];
-        }
         function spin() {
-            if (spinCount >= maxSpins) {
-                document.getElementById('warning').textContent = "You have reached your daily spin limit!";
-                return;
-            }
-            if (totalWinners.length >= maxWinnersPerWeek) {
-                document.getElementById('warning').textContent = "Max winners reached for this week!";
-                return;
-            }
-            let slot1 = document.getElementById('slot1');
-            let slot2 = document.getElementById('slot2');
-            let slot3 = document.getElementById('slot3');
-            slot1.innerHTML = `<img src="${getRandomImage()}" alt="Slot Image">`;
-            slot2.innerHTML = `<img src="${getRandomImage()}" alt="Slot Image">`;
-            slot3.innerHTML = `<img src="${getRandomImage()}" alt="Slot Image">`;
-            spinCount++;
-            localStorage.setItem("spinCount", spinCount);
-            checkResult();
-        }
-        function checkResult() {
-            let slot1 = document.getElementById('slot1').querySelector('img').src;
-            let slot2 = document.getElementById('slot2').querySelector('img').src;
-            let slot3 = document.getElementById('slot3').querySelector('img').src;
-            if (slot1 === slot2 && slot2 === slot3 && slot1.includes("2yd7WoG.jpg")) {
-                totalWinners.push(Date.now());
-                localStorage.setItem("totalWinners", JSON.stringify(totalWinners));
-                document.getElementById('result').textContent = "You Win!";
-            } else {
-                document.getElementById('result').textContent = "Try Again!";
-            }
+            let slots = document.querySelectorAll('.slot img');
+            slots.forEach(slot => slot.parentElement.classList.add('spinning'));
+            setTimeout(() => {
+                slots.forEach(slot => slot.parentElement.classList.remove('spinning'));
+                checkResult();
+            }, 1500);
         }
     </script>
+
 </body>
 </html>
