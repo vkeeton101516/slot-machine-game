@@ -90,16 +90,6 @@
             font-size: 24px;
             color: #fff;
         }
-
-        .slot-machine-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .slot img {
-            object-fit: contain;
-        }
     </style>
 </head>
 <body>
@@ -107,59 +97,89 @@
     <div class="header">Devoted Deals Slots</div>
     <div class="slot-container">
         <div class="slot-machine">
-            <!-- Slot 1 -->
-            <div class="slot">
-                <img src="https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg" alt="Cherry">
-            </div>
-            <!-- Slot 2 -->
-            <div class="slot">
-                <img src="https://i.postimg.cc/yxXXpZvZ/depositphotos-159290092-stock-illustration-slot-machine-seven-icon-color.webp" alt="7">
-            </div>
-            <!-- Slot 3 -->
-            <div class="slot">
-                <img src="https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg" alt="Bar">
-            </div>
+            <div class="slot"><img id="slot1" src="https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg" alt="Cherry"></div>
+            <div class="slot"><img id="slot2" src="https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg" alt="Cherry"></div>
+            <div class="slot"><img id="slot3" src="https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg" alt="Cherry"></div>
         </div>
-        <button class="spin-button">Spin</button>
-
-        <!-- Results Section -->
-        <div class="result" id="resultMessage">Good luck! Try your spin!</div>
-        <div class="warning" id="warningMessage" style="display: none;">You have reached the daily spin limit!</div>
+        <button class="spin-button" onclick="spin()">Spin</button>
+        <div class="result" id="result"></div>
+        <div class="warning" id="warning"></div>
     </div>
 
     <script>
-        // Confirmation Numbers
-        const confirmationNumbers = [
-            "45875664", "58761232", "87653099", "14589736", "01589536", "25796864",
-            "28658901", "02040587", "32158964", "38561515", "71456611", "82547125",
-            "94585477", "05161983", "02262007", "09232009", "04586652", "17565211",
-            "25893455", "24751855"
+        const slotImages = [
+            "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg", // Cherry
+            "https://i.postimg.cc/yxXXpZvZ/depositphotos-159290092-stock-illustration-slot-machine-seven-icon-color.webp", // Seven
+            "https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg" // Bar
         ];
 
-        let dailySpins = {}; // To track the spins per player (e.g., {playerId: numberOfSpins})
+        // Generate a random player ID if it doesn't already exist
+        if (!localStorage.getItem("playerID")) {
+            const playerID = 'player-' + Math.floor(Math.random() * 1000000);
+            localStorage.setItem("playerID", playerID);
+        }
+        const playerID = localStorage.getItem("playerID");
 
-        // Function to handle a spin
-        function handleSpin() {
-            const playerId = prompt("Enter your player ID (to track spins):");
+        let spinCount = parseInt(localStorage.getItem("spinCount")) || 0;
+        const maxSpins = 5;
+        let monthlyWinners = parseInt(localStorage.getItem("monthlyWinners")) || 0;
+        const maxWinners = 20;
 
-            if (dailySpins[playerId] >= 5) {
-                document.getElementById("warningMessage").style.display = "block";
-                return;
-            } else {
-                // Increment player's daily spins
-                dailySpins[playerId] = (dailySpins[playerId] || 0) + 1;
-            }
-
-            // Randomly pick a winner
-            const winner = confirmationNumbers[Math.floor(Math.random() * confirmationNumbers.length)];
-
-            // Here you can add more logic to track the wins, such as checking if the player gets 3 cherries or other winning combinations
-
-            document.getElementById("resultMessage").textContent = `You won! Your confirmation number is: ${winner}`;
+        function getRandomImage() {
+            return slotImages[Math.floor(Math.random() * slotImages.length)];
         }
 
-        // Assign spin functionality to the button
-        document.querySelector('.spin-button').addEventListener('click', handleSpin);
+        function spin() {
+            if (spinCount >= maxSpins) {
+                document.getElementById('warning').textContent = "You have reached the daily spin limit!";
+                return;
+            }
+
+            if (monthlyWinners >= maxWinners) {
+                document.getElementById('warning').textContent = "The monthly winner limit has been reached.";
+                return;
+            }
+
+            let slot1 = document.getElementById('slot1');
+            let slot2 = document.getElementById('slot2');
+            let slot3 = document.getElementById('slot3');
+
+            let tempImages = [getRandomImage(), getRandomImage(), getRandomImage()];
+
+            // Smooth Spin Effect
+            let spinDuration = 2000; // Total spin time
+            let intervalDuration = 50; // Time interval for each image change
+            let totalIterations = spinDuration / intervalDuration;
+            let currentIteration = 0;
+
+            let spinInterval = setInterval(() => {
+                slot1.src = getRandomImage();
+                slot2.src = getRandomImage();
+                slot3.src = getRandomImage();
+                currentIteration++;
+
+                if (currentIteration >= totalIterations) {
+                    clearInterval(spinInterval);
+                    slot1.src = tempImages[0];
+                    slot2.src = tempImages[1];
+                    slot3.src = tempImages[2];
+                    checkResult(tempImages);
+                }
+            }, intervalDuration);
+
+            spinCount++;
+            localStorage.setItem("spinCount", spinCount);
+        }
+
+        function checkResult(images) {
+            if (images[0] === images[1] && images[1] === images[2] && images[0] === "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg") {
+                document.getElementById('result').innerHTML = "<span style='color: yellow;'>You Win!</span>";
+                monthlyWinners++;
+                localStorage.setItem("monthlyWinners", monthlyWinners);
+            } else {
+                document.getElementById('result').innerHTML = "<span style='color: red;'>Try Again!</span>";
+            }
+        }
     </script>
 
 </body>
