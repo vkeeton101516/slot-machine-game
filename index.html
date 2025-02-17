@@ -97,9 +97,9 @@
     <div class="header">Devoted Deals Slots</div>
     <div class="slot-container">
         <div class="slot-machine">
-            <div class="slot"><img id="slot1" src="" alt="Slot"></div>
-            <div class="slot"><img id="slot2" src="" alt="Slot"></div>
-            <div class="slot"><img id="slot3" src="" alt="Slot"></div>
+            <div class="slot"><img id="slot1" src="https://www.gstatic.com/webp/gallery/1.jpg" alt="Slot"></div>
+            <div class="slot"><img id="slot2" src="https://www.gstatic.com/webp/gallery/2.jpg" alt="Slot"></div>
+            <div class="slot"><img id="slot3" src="https://www.gstatic.com/webp/gallery/3.jpg" alt="Slot"></div>
         </div>
         <button class="spin-button" onclick="spin()">Spin</button>
         <div class="result" id="result"></div>
@@ -108,9 +108,9 @@
 
     <script>
         const slotImages = [
-            "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg", // Cherry
-            "https://i.postimg.cc/yxXXpZvZ/depositphotos-159290092-stock-illustration-slot-machine-seven-icon-color.webp", // Seven
-            "https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg" // Non-winning symbol (third image)
+            "https://www.gstatic.com/webp/gallery/1.jpg", // Cherry
+            "https://www.gstatic.com/webp/gallery/2.jpg", // Seven
+            "https://www.gstatic.com/webp/gallery/3.jpg" // Non-winning symbol (third image)
         ];
 
         const confirmationNumbers = [
@@ -182,7 +182,7 @@
         }
 
         function checkResult(images) {
-            if (images[0] === images[1] && images[1] === images[2] && images[0] === "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg") {
+            if (images[0] === images[1] && images[1] === images[2] && images[0] === "https://www.gstatic.com/webp/gallery/1.jpg") {
                 const winnerConfirmation = getWinnerConfirmation();
                 if (winnerConfirmation) {
                     document.getElementById('result').innerHTML = "<span style='color: yellow;'>You Win! Your confirmation number is: " + winnerConfirmation + "</span>";
