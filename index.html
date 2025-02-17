@@ -147,7 +147,7 @@
         ];
 
         let spinCount = localStorage.getItem("spinCount") ? parseInt(localStorage.getItem("spinCount")) : 0;
-        const maxSpins = 3;
+        const maxSpins = 20;
 
         // Confirmation numbers for winners
         const confirmationNumbers = [
@@ -166,6 +166,9 @@
         }
 
         function spin() {
+            const currentDate = new Date().toDateString();
+            const lastWinDate = localStorage.getItem("lastWinDate");
+
             if (spinCount >= maxSpins) {
                 document.getElementById('warning').textContent = "You have reached the daily spin limit!";
                 return;
@@ -173,6 +176,12 @@
 
             if (totalWins >= maxTotalWins) {
                 document.getElementById('warning').textContent = "All wins have been claimed for this month!";
+                return;
+            }
+
+            // Check if the player has already won today
+            if (lastWinDate === currentDate) {
+                document.getElementById('warning').textContent = "You have already won today!";
                 return;
             }
 
@@ -200,11 +209,11 @@
             spinCount++;
             localStorage.setItem("spinCount", spinCount); // Store updated spin count
             setTimeout(() => {
-                checkResult();
+                checkResult(currentDate);
             }, 1000); // Wait for 1 second before checking result
         }
 
-        function checkResult() {
+        function checkResult(currentDate) {
             let slot1 = document.getElementById('slot1').querySelector('img').src;
             let slot2 = document.getElementById('slot2').querySelector('img').src;
             let slot3 = document.getElementById('slot3').querySelector('img').src;
@@ -216,6 +225,7 @@
                 usedConfirmationNumbers.push(confirmationNumber);
                 totalWins++;
                 localStorage.setItem("totalWins", totalWins); // Store updated total wins
+                localStorage.setItem("lastWinDate", currentDate); // Store the date of the win
                 document.getElementById('result').innerHTML = "<span class='neon-text'>You Win!</span> Confirmation Number: " + confirmationNumber;
             } else {
                 document.getElementById('result').innerHTML = "<span class='neon-text'>Try Again!</span>";
