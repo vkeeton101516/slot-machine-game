@@ -7,17 +7,65 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #222;
-            color: white;
-            text-align: center;
-            padding: 50px;
+            background-image: url('https://freeimghost.net/images/2025/02/14/bg.jpg');
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
         }
 
         .header {
             font-size: 50px;
             font-weight: bold;
-            text-transform: uppercase;
+            color: #fff;
+            text-align: center;
             margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes neonGlow {
+            0% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
+            50% { text-shadow: 0 0 20px #ff3399, 0 0 30px #ff3399, 0 0 40px #ff3399; }
+            100% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
+        }
+
+        .slot-container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 800px;
+        }
+
+        .slot-machine {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .slot {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            border: 4px solid #fff;
+            overflow: hidden;
+            background: #222;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+        }
+
+        .slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .spin-button {
@@ -28,18 +76,102 @@
             border: none;
             border-radius: 10px;
             cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+            transition: all 0.3s ease;
         }
 
         .spin-button:hover {
             background: linear-gradient(135deg, #ff3385, #ff80b3);
             transform: scale(1.1);
         }
+
+        .result, .warning {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
 
     <div class="header">Devoted Deals Slots</div>
-    <button class="spin-button">Spin</button>
+    <div class="slot-container">
+        <div class="slot-machine">
+            <div class="slot"><img id="slot1" src="https://iili.io/2yd7WoG.jpg" alt="Slot"></div>
+            <div class="slot"><img id="slot2" src="https://iili.io/2yd7WoG.jpg" alt="Slot"></div>
+            <div class="slot"><img id="slot3" src="https://iili.io/2yd7WoG.jpg" alt="Slot"></div>
+        </div>
+        <button class="spin-button" onclick="spin()">Spin</button>
+        <div class="result" id="result"></div>
+        <div class="warning" id="warning"></div>
+    </div>
+
+    <script>
+        const slotImages = [
+            "https://iili.io/2yd7WoG.jpg", // Cherry
+            "https://iili.io/2ydaqYB.webp" // Non-winning symbol
+        ];
+        let spinCount = parseInt(localStorage.getItem("spinCount")) || 0;
+        const maxSpins = 5;
+        let monthlyWinners = parseInt(localStorage.getItem("monthlyWinners")) || 0;
+        const maxWinners = 20;
+
+        function getRandomImage() {
+            return slotImages[Math.floor(Math.random() * slotImages.length)];
+        }
+
+        function spin() {
+            if (spinCount >= maxSpins) {
+                document.getElementById('warning').textContent = "You have reached the daily spin limit!";
+                return;
+            }
+
+            if (monthlyWinners >= maxWinners) {
+                document.getElementById('warning').textContent = "The monthly winner limit has been reached.";
+                return;
+            }
+
+            let slot1 = document.getElementById('slot1');
+            let slot2 = document.getElementById('slot2');
+            let slot3 = document.getElementById('slot3');
+
+            let tempImages = [getRandomImage(), getRandomImage(), getRandomImage()];
+
+            // Smooth Spin Effect
+            let spinDuration = 2000; // Total spin time
+            let intervalDuration = 50; // Time interval for each image change
+            let totalIterations = spinDuration / intervalDuration;
+            let currentIteration = 0;
+
+            let spinInterval = setInterval(() => {
+                slot1.src = getRandomImage();
+                slot2.src = getRandomImage();
+                slot3.src = getRandomImage();
+                currentIteration++;
+
+                if (currentIteration >= totalIterations) {
+                    clearInterval(spinInterval);
+                    slot1.src = tempImages[0];
+                    slot2.src = tempImages[1];
+                    slot3.src = tempImages[2];
+                    checkResult(tempImages);
+                }
+            }, intervalDuration);
+
+            spinCount++;
+            localStorage.setItem("spinCount", spinCount);
+        }
+
+        function checkResult(images) {
+            if (images[0] === images[1] && images[1] === images[2] && images[0] === "https://iili.io/2yd7WoG.jpg") {
+                document.getElementById('result').innerHTML = "<span style='color: yellow;'>You Win! Your Confirmation Number: 45875664</span>";
+                monthlyWinners++;
+                localStorage.setItem("monthlyWinners", monthlyWinners);
+            } else {
+                document.getElementById('result').innerHTML = "<span style='color: red;'>Try Again!</span>";
+            }
+        }
+    </script>
 
 </body>
 </html>
