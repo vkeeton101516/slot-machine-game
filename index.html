@@ -69,24 +69,6 @@
             object-fit: cover;
         }
 
-        @keyframes spinAnimation {
-            0% {
-                transform: rotateX(0deg);
-            }
-            30% {
-                transform: rotateX(720deg);
-            }
-            50% {
-                transform: rotateX(1440deg);
-            }
-            80% {
-                transform: rotateX(2160deg);
-            }
-            100% {
-                transform: rotateX(2880deg);
-            }
-        }
-
         .spin-button {
             padding: 15px 30px;
             background: linear-gradient(135deg, #ff66b2, #ff3399);
@@ -204,25 +186,27 @@
             localStorage.setItem("spinCount", spinCount);
 
             // Check for a winner (only cherry combination wins)
-            if (slot1.src === slot2.src && slot2.src === slot3.src && slot1.src === "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg") {
-                // Winner logic
-                let confirmationNumber = getRandomConfirmationNumber();
-                if (confirmationNumber !== null) {
-                    let winnerMessage = `Congratulations! You won $5! Your confirmation number is ${confirmationNumber}`;
+            setTimeout(() => {
+                if (slot1.src === slot2.src && slot2.src === slot3.src && slot1.src === "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg") {
+                    // Winner logic
+                    let confirmationNumber = getRandomConfirmationNumber();
+                    if (confirmationNumber !== null) {
+                        let winnerMessage = `Congratulations! You won $5! Your confirmation number is ${confirmationNumber}`;
 
-                    // Increment the monthly winner count and store it
-                    monthlyWinners++;
-                    localStorage.setItem("monthlyWinners", monthlyWinners);
+                        // Increment the monthly winner count and store it
+                        monthlyWinners++;
+                        localStorage.setItem("monthlyWinners", monthlyWinners);
 
-                    // Display winner message
-                    document.getElementById('result').textContent = winnerMessage;
-                    document.getElementById('confirmationNumber').textContent = `Confirmation Number: ${confirmationNumber}`;
+                        // Display winner message
+                        document.getElementById('result').textContent = winnerMessage;
+                        document.getElementById('confirmationNumber').textContent = `Confirmation Number: ${confirmationNumber}`;
+                    } else {
+                        document.getElementById('result').textContent = "Sorry, no winners left this month.";
+                    }
                 } else {
-                    document.getElementById('result').textContent = "Sorry, no winners left this month.";
+                    document.getElementById('result').textContent = "No match, try again!";
                 }
-            } else {
-                document.getElementById('result').textContent = "No match, try again!";
-            }
+            }, 3000); // 3 seconds for the spin to end
         }
     </script>
 
