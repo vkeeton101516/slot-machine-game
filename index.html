@@ -1,16 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Slot machine game</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slot Machine Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    button {
+      padding: 20px 40px;
+      background: #ff66b2;
+      color: white;
+      font-size: 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    button:hover {
+      transform: scale(1.1);
+    }
+  </style>
 </head>
 <body>
+
   <button onclick="spin()">Spin</button>
+
   <script>
     // Define the spin function in the global scope
     function spin() {
       console.log("Spinning the slot machine!");
-      // Add your other logic here for slot animations, results, etc.
+      // Add your other logic here.
     }
   </script>
+
 </body>
 </html>
+Sent
+
+
