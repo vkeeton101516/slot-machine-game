@@ -4,23 +4,163 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Devoted Deals Slots</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://freeimghost.net/images/2025/02/14/bg.jpg');
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        .header {
+            font-size: 50px;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes neonGlow {
+            0% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
+            50% { text-shadow: 0 0 20px #ff3399, 0 0 30px #ff3399, 0 0 40px #ff3399; }
+            100% { text-shadow: 0 0 5px #ff66b2, 0 0 10px #ff66b2, 0 0 15px #ff66b2; }
+        }
+
+        .slot-container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 800px;
+        }
+
+        .slot-machine {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .slot {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            border: 4px solid #fff;
+            overflow: hidden;
+            background: #222;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+        }
+
+        .slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .spin-button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #ff66b2, #ff3399);
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        .spin-button:hover {
+            background: linear-gradient(135deg, #ff3385, #ff80b3);
+            transform: scale(1.1);
+        }
+
+        .result, .warning {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #fff;
+        }
+
+        .slot-machine-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .slot img {
+            object-fit: contain;
+        }
+    </style>
 </head>
 <body>
 
     <div class="header">Devoted Deals Slots</div>
     <div class="slot-container">
         <div class="slot-machine">
-            <div class="slot"><img id="slot1" src="https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg" alt="Slot"></div>
-            <div class="slot"><img id="slot2" src="https://i.postimg.cc/yxXXpZvZ/depositphotos-159290092-stock-illustration-slot-machine-seven-icon-color.webp" alt="Slot"></div>
-            <div class="slot"><img id="slot3" src="https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg" alt="Slot"></div>
+            <!-- Slot 1 -->
+            <div class="slot">
+                <img src="https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg" alt="Cherry">
+            </div>
+            <!-- Slot 2 -->
+            <div class="slot">
+                <img src="https://i.postimg.cc/yxXXpZvZ/depositphotos-159290092-stock-illustration-slot-machine-seven-icon-color.webp" alt="7">
+            </div>
+            <!-- Slot 3 -->
+            <div class="slot">
+                <img src="https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg" alt="Bar">
+            </div>
         </div>
-        <button class="spin-button" onclick="spin()">Spin</button>
-        <div class="result" id="result"></div>
-        <div class="warning" id="warning"></div>
+        <button class="spin-button">Spin</button>
+
+        <!-- Results Section -->
+        <div class="result" id="resultMessage">Good luck! Try your spin!</div>
+        <div class="warning" id="warningMessage" style="display: none;">You have reached the daily spin limit!</div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // Confirmation Numbers
+        const confirmationNumbers = [
+            "45875664", "58761232", "87653099", "14589736", "01589536", "25796864",
+            "28658901", "02040587", "32158964", "38561515", "71456611", "82547125",
+            "94585477", "05161983", "02262007", "09232009", "04586652", "17565211",
+            "25893455", "24751855"
+        ];
+
+        let dailySpins = {}; // To track the spins per player (e.g., {playerId: numberOfSpins})
+
+        // Function to handle a spin
+        function handleSpin() {
+            const playerId = prompt("Enter your player ID (to track spins):");
+
+            if (dailySpins[playerId] >= 5) {
+                document.getElementById("warningMessage").style.display = "block";
+                return;
+            } else {
+                // Increment player's daily spins
+                dailySpins[playerId] = (dailySpins[playerId] || 0) + 1;
+            }
+
+            // Randomly pick a winner
+            const winner = confirmationNumbers[Math.floor(Math.random() * confirmationNumbers.length)];
+
+            // Here you can add more logic to track the wins, such as checking if the player gets 3 cherries or other winning combinations
+
+            document.getElementById("resultMessage").textContent = `You won! Your confirmation number is: ${winner}`;
+        }
+
+        // Assign spin functionality to the button
+        document.querySelector('.spin-button').addEventListener('click', handleSpin);
+    </script>
 
 </body>
 </html>
