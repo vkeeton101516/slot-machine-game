@@ -97,9 +97,9 @@
     <div class="header">Devoted Deals Slots</div>
     <div class="slot-container">
         <div class="slot-machine">
-            <div class="slot"><img id="slot1" src="https://www.gstatic.com/webp/gallery/1.jpg" alt="Slot"></div>
-            <div class="slot"><img id="slot2" src="https://www.gstatic.com/webp/gallery/2.jpg" alt="Slot"></div>
-            <div class="slot"><img id="slot3" src="https://www.gstatic.com/webp/gallery/3.jpg" alt="Slot"></div>
+            <div class="slot"><img id="slot1" src="" alt="Slot"></div>
+            <div class="slot"><img id="slot2" src="" alt="Slot"></div>
+            <div class="slot"><img id="slot3" src="" alt="Slot"></div>
         </div>
         <button class="spin-button" onclick="spin()">Spin</button>
         <div class="result" id="result"></div>
@@ -108,35 +108,34 @@
 
     <script>
         const slotImages = [
-            "https://www.gstatic.com/webp/gallery/1.jpg", // Cherry
-            "https://www.gstatic.com/webp/gallery/2.jpg", // Seven
-            "https://www.gstatic.com/webp/gallery/3.jpg" // Non-winning symbol (third image)
-        ];
-
-        const confirmationNumbers = [
-            "45875664", "58761232", "87653099", "14589736", "01589536", "25796864", "28658901", 
-            "02040587", "32158964", "38561515", "71456611", "82547125", "94585477", "05161983", 
-            "02262007", "09232009", "04586652", "17565211", "25893455", "24751855"
+            "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg", // Cherry
+            "https://i.postimg.cc/yxXXpZvZ/depositphotos-159290092-stock-illustration-slot-machine-seven-icon-color.webp", // Seven
+            "https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg" // Bar
         ];
 
         let spinCount = parseInt(localStorage.getItem("spinCount")) || 0;
         const maxSpins = 5;
         let monthlyWinners = parseInt(localStorage.getItem("monthlyWinners")) || 0;
         const maxWinners = 20;
-        let winners = [];
+
+        // List of confirmation numbers for winners
+        const confirmationNumbers = [
+            "45875664", "58761232", "87653099", "14589736", "01589536",
+            "25796864", "28658901", "02040587", "32158964", "38561515",
+            "71456611", "82547125", "94585477", "05161983", "02262007",
+            "09232009", "04586652", "17565211", "25893455", "24751855"
+        ];
+
+        // To keep track of winners and prevent duplicates
+        let dailyWinners = {};
 
         function getRandomImage() {
             return slotImages[Math.floor(Math.random() * slotImages.length)];
         }
 
-        function getWinnerConfirmation() {
-            const availableNumbers = confirmationNumbers.filter(num => !winners.includes(num));
-            if (availableNumbers.length > 0) {
-                const winnerNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
-                winners.push(winnerNumber);
-                return winnerNumber;
-            }
-            return null;
+        function getRandomWinner() {
+            let winner = confirmationNumbers[Math.floor(Math.random() * confirmationNumbers.length)];
+            return winner;
         }
 
         function spin() {
@@ -182,14 +181,23 @@
         }
 
         function checkResult(images) {
-            if (images[0] === images[1] && images[1] === images[2] && images[0] === "https://www.gstatic.com/webp/gallery/1.jpg") {
-                const winnerConfirmation = getWinnerConfirmation();
-                if (winnerConfirmation) {
-                    document.getElementById('result').innerHTML = "<span style='color: yellow;'>You Win! Your confirmation number is: " + winnerConfirmation + "</span>";
+            if (images[0] === images[1] && images[1] === images[2] && images[0] === "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg") {
+                // Check if the player has already won today
+                let today = new Date().toDateString();
+                if (!dailyWinners[today]) {
+                    dailyWinners[today] = new Set();
+                }
+
+                // Ensure the player wins once per day
+                if (dailyWinners[today].size < 1) {
+                    let winner = getRandomWinner();
+                    dailyWinners[today].add(winner);
+
                     monthlyWinners++;
                     localStorage.setItem("monthlyWinners", monthlyWinners);
+                    document.getElementById('result').innerHTML = "<span style='color: yellow;'>You Win! Confirmation Number: " + winner + "</span>";
                 } else {
-                    document.getElementById('result').innerHTML = "<span style='color: red;'>No more winners for this month. Try again later!</span>";
+                    document.getElementById('result').innerHTML = "<span style='color: yellow;'>You Win, but you've already won today!</span>";
                 }
             } else {
                 document.getElementById('result').innerHTML = "<span style='color: red;'>Try Again!</span>";
