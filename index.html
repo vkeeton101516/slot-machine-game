@@ -93,13 +93,12 @@
     </style>
 </head>
 <body>
-
     <div class="header">Devoted Deals Slots</div>
     <div class="slot-container">
         <div class="slot-machine">
-            <div class="slot"><img id="slot1" src="https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg" alt="Cherry"></div>
-            <div class="slot"><img id="slot2" src="https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg" alt="Cherry"></div>
-            <div class="slot"><img id="slot3" src="https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg" alt="Cherry"></div>
+            <div class="slot"><img id="slot1" src="" alt="Slot"></div>
+            <div class="slot"><img id="slot2" src="" alt="Slot"></div>
+            <div class="slot"><img id="slot3" src="" alt="Slot"></div>
         </div>
         <button class="spin-button" onclick="spin()">Spin</button>
         <div class="result" id="result"></div>
@@ -108,35 +107,32 @@
 
     <script>
         const slotImages = [
-            "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg", // Cherry
-            "https://i.postimg.cc/yxXXpZvZ/depositphotos-159290092-stock-illustration-slot-machine-seven-icon-color.webp", // Seven
-            "https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg" // Bar
+            "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg",
+            "https://i.postimg.cc/yxXXpZvZ/depositphotos-159290092-stock-illustration-slot-machine-seven-icon-color.webp",
+            "https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg"
         ];
-
-        // Generate a random player ID if it doesn't already exist
-        if (!localStorage.getItem("playerID")) {
-            const playerID = 'player-' + Math.floor(Math.random() * 1000000);
-            localStorage.setItem("playerID", playerID);
-        }
-        const playerID = localStorage.getItem("playerID");
-
-        let spinCount = parseInt(localStorage.getItem("spinCount")) || 0;
-        const maxSpins = 5;
-        let monthlyWinners = parseInt(localStorage.getItem("monthlyWinners")) || 0;
-        const maxWinners = 20;
 
         function getRandomImage() {
             return slotImages[Math.floor(Math.random() * slotImages.length)];
         }
 
+        function resetDailySpins() {
+            const lastPlayedDate = localStorage.getItem("lastPlayedDate");
+            const today = new Date().toLocaleDateString();
+            if (lastPlayedDate !== today) {
+                localStorage.setItem("spinCount", 0);
+                localStorage.setItem("lastPlayedDate", today);
+            }
+        }
+
+        resetDailySpins();
+
+        let spinCount = parseInt(localStorage.getItem("spinCount")) || 0;
+        const maxSpins = 5;
+
         function spin() {
             if (spinCount >= maxSpins) {
                 document.getElementById('warning').textContent = "You have reached the daily spin limit!";
-                return;
-            }
-
-            if (monthlyWinners >= maxWinners) {
-                document.getElementById('warning').textContent = "The monthly winner limit has been reached.";
                 return;
             }
 
@@ -146,41 +142,31 @@
 
             let tempImages = [getRandomImage(), getRandomImage(), getRandomImage()];
 
-            // Smooth Spin Effect
-            let spinDuration = 2000; // Total spin time
-            let intervalDuration = 50; // Time interval for each image change
-            let totalIterations = spinDuration / intervalDuration;
-            let currentIteration = 0;
-
             let spinInterval = setInterval(() => {
                 slot1.src = getRandomImage();
                 slot2.src = getRandomImage();
                 slot3.src = getRandomImage();
-                currentIteration++;
+            }, 50);
 
-                if (currentIteration >= totalIterations) {
-                    clearInterval(spinInterval);
-                    slot1.src = tempImages[0];
-                    slot2.src = tempImages[1];
-                    slot3.src = tempImages[2];
-                    checkResult(tempImages);
-                }
-            }, intervalDuration);
+            setTimeout(() => {
+                clearInterval(spinInterval);
+                slot1.src = tempImages[0];
+                slot2.src = tempImages[1];
+                slot3.src = tempImages[2];
+                checkResult(tempImages);
+            }, 2000);
 
             spinCount++;
             localStorage.setItem("spinCount", spinCount);
         }
 
         function checkResult(images) {
-            if (images[0] === images[1] && images[1] === images[2] && images[0] === "https://i.postimg.cc/wB88DKyb/video-slot-machine-symbols-cherries-thumbnail-square-0000.jpg") {
+            if (images.every(img => img === slotImages[0])) {
                 document.getElementById('result').innerHTML = "<span style='color: yellow;'>You Win!</span>";
-                monthlyWinners++;
-                localStorage.setItem("monthlyWinners", monthlyWinners);
             } else {
                 document.getElementById('result').innerHTML = "<span style='color: red;'>Try Again!</span>";
             }
         }
     </script>
-
 </body>
 </html>
