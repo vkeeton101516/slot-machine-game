@@ -93,6 +93,7 @@
     </style>
 </head>
 <body>
+
     <div class="header">Devoted Deals Slots</div>
     <div class="slot-container">
         <div class="slot-machine">
@@ -117,16 +118,16 @@
         }
 
         function resetDailySpins() {
-            const lastPlayedDate = localStorage.getItem("lastPlayedDate");
+            const lastReset = localStorage.getItem("lastReset") || "";
             const today = new Date().toLocaleDateString();
-            if (lastPlayedDate !== today) {
-                localStorage.setItem("spinCount", 0);
-                localStorage.setItem("lastPlayedDate", today);
+            
+            if (lastReset !== today) {
+                localStorage.setItem("spinCount", "0");
+                localStorage.setItem("lastReset", today);
             }
         }
 
         resetDailySpins();
-
         let spinCount = parseInt(localStorage.getItem("spinCount")) || 0;
         const maxSpins = 5;
 
@@ -136,36 +137,19 @@
                 return;
             }
 
+            document.getElementById('warning').textContent = "";
+            
             let slot1 = document.getElementById('slot1');
             let slot2 = document.getElementById('slot2');
             let slot3 = document.getElementById('slot3');
 
             let tempImages = [getRandomImage(), getRandomImage(), getRandomImage()];
-
-            let spinInterval = setInterval(() => {
-                slot1.src = getRandomImage();
-                slot2.src = getRandomImage();
-                slot3.src = getRandomImage();
-            }, 50);
-
-            setTimeout(() => {
-                clearInterval(spinInterval);
-                slot1.src = tempImages[0];
-                slot2.src = tempImages[1];
-                slot3.src = tempImages[2];
-                checkResult(tempImages);
-            }, 2000);
+            slot1.src = tempImages[0];
+            slot2.src = tempImages[1];
+            slot3.src = tempImages[2];
 
             spinCount++;
             localStorage.setItem("spinCount", spinCount);
-        }
-
-        function checkResult(images) {
-            if (images.every(img => img === slotImages[0])) {
-                document.getElementById('result').innerHTML = "<span style='color: yellow;'>You Win!</span>";
-            } else {
-                document.getElementById('result').innerHTML = "<span style='color: red;'>Try Again!</span>";
-            }
         }
     </script>
 </body>
