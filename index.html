@@ -66,18 +66,12 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            animation: rotateSpin 2s ease-in-out;
         }
 
-        @keyframes rotateSpin {
-            0% { transform: rotateX(0deg); }
-            100% { transform: rotateX(360deg); }
-        }
-
-        .warning {
-            color: red;
-            font-size: 18px;
-            margin-top: 20px;
+        .result, .warning, .confirmation {
+            color: #fff;
+            font-size: 20px;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -90,7 +84,9 @@
             <div class="slot"><img id="slot3"></div>
         </div>
         <button class="spin-button" onclick="spin()">Spin</button>
+        <div class="result" id="result"></div>
         <div class="warning" id="warning"></div>
+        <div class="confirmation" id="confirmation"></div>
     </div>
 
     <script>
@@ -100,30 +96,31 @@
             "https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg"
         ];
 
+        const confirmationNumbers = [
+            "45875664", "58761232", "87653099", "14589736", "01589536", "25796864",
+            "28658901", "02040587", "32158964", "38561515", "71456611", "82547125",
+            "94585477", "05161983", "02262007", "09232009", "04586652", "17565211",
+            "25893455", "24751855"
+        ];
+
         let spinCount = parseInt(localStorage.getItem("spinCount")) || 0;
         let lastSpinDate = localStorage.getItem("lastSpinDate") || "";
         let today = new Date().toDateString();
+        let winners = JSON.parse(localStorage.getItem("winners")) || [];
+
         const maxSpins = 5;
+        const maxWins = 20;
 
         if (lastSpinDate !== today) {
             spinCount = 0;
+            winners = [];
             localStorage.setItem("spinCount", 0);
+            localStorage.setItem("winners", JSON.stringify(winners));
             localStorage.setItem("lastSpinDate", today);
         }
 
         function getRandomImage() {
-            let image = slotImages[Math.floor(Math.random() * slotImages.length)];
-            let img = new Image();
-            img.src = image;
-
-            img.onload = () => {
-                return image;
-            };
-
-            img.onerror = () => {
-                return "https://via.placeholder.com/120x120?text=Image+Error";
-            };
-            return image;
+            return slotImages[Math.floor(Math.random() * slotImages.length)];
         }
 
         function initializeSlots() {
@@ -160,11 +157,28 @@
                     slot1.src = tempImages[0];
                     slot2.src = tempImages[1];
                     slot3.src = tempImages[2];
+                    checkWin(slot1, slot2, slot3);
                 }
             }, intervalDuration);
 
             spinCount++;
             localStorage.setItem("spinCount", spinCount);
+        }
+
+        function checkWin(slot1, slot2, slot3) {
+            if (slot1.src.includes("cherries") && slot2.src.includes("cherries") && slot3.src.includes("cherries")) {
+                if (winners.length >= maxWins) {
+                    document.getElementById('result').textContent = "Sorry, all winners have been selected for this month!";
+                } else {
+                    const winnerConfirmation = confirmationNumbers[winners.length];
+                    winners.push(winnerConfirmation);
+                    localStorage.setItem("winners", JSON.stringify(winners));
+                    document.getElementById('result').textContent = "You won!";
+                    document.getElementById('confirmation').textContent = `Your confirmation number: ${winnerConfirmation}`;
+                }
+            } else {
+                document.getElementById('result').textContent = "Try again!";
+            }
         }
 
         initializeSlots();
