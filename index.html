@@ -68,7 +68,7 @@
             object-fit: cover;
         }
 
-        .result, .warning, .confirmation {
+        .result, .confirmation {
             color: #fff;
             font-size: 20px;
             margin-top: 10px;
@@ -85,7 +85,6 @@
         </div>
         <button class="spin-button" onclick="spin()">Spin</button>
         <div class="result" id="result"></div>
-        <div class="warning" id="warning"></div>
         <div class="confirmation" id="confirmation"></div>
     </div>
 
@@ -121,10 +120,9 @@
         }
 
         function initializeGame() {
+            // No spin limit warning displayed anymore
             if (winnerCount >= maxWins) {
-                document.getElementById('warning').textContent = "Sorry, all 20 wins have been taken for this month!";
-            } else {
-                document.getElementById('warning').textContent = "";
+                document.getElementById('result').textContent = "Sorry, all 20 wins have been taken for this month!";
             }
         }
 
@@ -174,4 +172,19 @@
                         localStorage.setItem("winners", JSON.stringify(winners));
                         winnerCount++;
                         document.getElementById('result').textContent = "You won!";
-                        document.getElementById('confirmation').textContent = `Your confirmation number: ${
+                        document.getElementById('confirmation').textContent = `Your confirmation number: ${winnerConfirmation}`;
+                    } else {
+                        document.getElementById('result').textContent = "You can only win twice a month.";
+                    }
+                }
+            } else {
+                document.getElementById('result').textContent = "Try again!";
+            }
+        }
+
+        // Initialize game and slots
+        initializeGame();
+        initializeSlots();
+    </script>
+</body>
+</html>
