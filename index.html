@@ -67,39 +67,15 @@
             height: 100%;
             object-fit: cover;
         }
-
-        .spin-button {
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #ff66b2, #ff3399);
-            color: white;
-            font-size: 18px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
-            transition: all 0.3s ease;
-        }
-
-        .spin-button:hover {
-            background: linear-gradient(135deg, #ff3385, #ff80b3);
-            transform: scale(1.1);
-        }
-
-        .result, .warning {
-            margin-top: 20px;
-            font-size: 24px;
-            color: #fff;
-        }
     </style>
 </head>
 <body>
-
     <div class="header">Devoted Deals Slots</div>
     <div class="slot-container">
         <div class="slot-machine">
-            <div class="slot"><img id="slot1" src="" alt="Slot"></div>
-            <div class="slot"><img id="slot2" src="" alt="Slot"></div>
-            <div class="slot"><img id="slot3" src="" alt="Slot"></div>
+            <div class="slot"><img id="slot1"></div>
+            <div class="slot"><img id="slot2"></div>
+            <div class="slot"><img id="slot3"></div>
         </div>
         <button class="spin-button" onclick="spin()">Spin</button>
         <div class="result" id="result"></div>
@@ -113,23 +89,26 @@
             "https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg"
         ];
 
+        let spinCount = parseInt(localStorage.getItem("spinCount")) || 0;
+        let lastSpinDate = localStorage.getItem("lastSpinDate") || "";
+        let today = new Date().toDateString();
+        const maxSpins = 5;
+
+        if (lastSpinDate !== today) {
+            spinCount = 0;
+            localStorage.setItem("spinCount", 0);
+            localStorage.setItem("lastSpinDate", today);
+        }
+
         function getRandomImage() {
             return slotImages[Math.floor(Math.random() * slotImages.length)];
         }
 
-        function resetDailySpins() {
-            const lastReset = localStorage.getItem("lastReset") || "";
-            const today = new Date().toLocaleDateString();
-            
-            if (lastReset !== today) {
-                localStorage.setItem("spinCount", "0");
-                localStorage.setItem("lastReset", today);
-            }
+        function initializeSlots() {
+            document.getElementById("slot1").src = getRandomImage();
+            document.getElementById("slot2").src = getRandomImage();
+            document.getElementById("slot3").src = getRandomImage();
         }
-
-        resetDailySpins();
-        let spinCount = parseInt(localStorage.getItem("spinCount")) || 0;
-        const maxSpins = 5;
 
         function spin() {
             if (spinCount >= maxSpins) {
@@ -137,20 +116,36 @@
                 return;
             }
 
-            document.getElementById('warning').textContent = "";
-            
             let slot1 = document.getElementById('slot1');
             let slot2 = document.getElementById('slot2');
             let slot3 = document.getElementById('slot3');
 
             let tempImages = [getRandomImage(), getRandomImage(), getRandomImage()];
-            slot1.src = tempImages[0];
-            slot2.src = tempImages[1];
-            slot3.src = tempImages[2];
+
+            let spinDuration = 2000;
+            let intervalDuration = 50;
+            let totalIterations = spinDuration / intervalDuration;
+            let currentIteration = 0;
+
+            let spinInterval = setInterval(() => {
+                slot1.src = getRandomImage();
+                slot2.src = getRandomImage();
+                slot3.src = getRandomImage();
+                currentIteration++;
+
+                if (currentIteration >= totalIterations) {
+                    clearInterval(spinInterval);
+                    slot1.src = tempImages[0];
+                    slot2.src = tempImages[1];
+                    slot3.src = tempImages[2];
+                }
+            }, intervalDuration);
 
             spinCount++;
             localStorage.setItem("spinCount", spinCount);
         }
+
+        initializeSlots();
     </script>
 </body>
 </html>
