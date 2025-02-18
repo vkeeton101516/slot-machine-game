@@ -95,18 +95,19 @@
             "https://i.postimg.cc/cHDFMj4n/istockphoto-1135769825-612x612.jpg"
         ];
 
-        const confirmationNumbers = [
-            "45875664", "58761232", "87653099", "14589736", "01589536", "25796864",
-            "28658901", "02040587", "32158964", "38561515", "71456611", "82547125",
-            "94585477", "05161983", "02262007", "09232009", "04586652", "17565211",
-            "25893455", "24751855"
+        // Load available confirmation numbers from localStorage or set initial list
+        let confirmationNumbers = JSON.parse(localStorage.getItem("confirmationNumbers")) || [
+            "58761232", "87653099", "14589736", "01589536", "25796864",
+            "28658901", "02040587", "32158964", "38561515", "71456611",
+            "82547125", "94585477", "05161983", "02262007", "09232009",
+            "04586652", "17565211", "25893455", "24751855"
         ];
 
         let winners = JSON.parse(localStorage.getItem("winners")) || [];
         let winnerCount = winners.length;
-        let currentPlayer = "player";  // Replace this with your player identification logic (for example, use login or session ID)
+        let currentPlayer = "player";  // Replace this with actual player tracking logic
 
-        const maxWinsPerPlayer = 2;
+        const maxWinsPerPlayer = 1;
         const maxWins = 20;
 
         function getRandomImage() {
@@ -120,7 +121,6 @@
         }
 
         function initializeGame() {
-            // No spin limit warning displayed anymore
             if (winnerCount >= maxWins) {
                 document.getElementById('result').textContent = "Sorry, all 20 wins have been taken for this month!";
             }
@@ -164,17 +164,23 @@
                 if (winnerCount >= maxWins) {
                     document.getElementById('result').textContent = "Sorry, all 20 wins have been taken for this month!";
                 } else {
-                    // Ensure player hasn't won more than 2 times
                     let playerWins = winners.filter(winner => winner.player === currentPlayer).length;
                     if (playerWins < maxWinsPerPlayer) {
-                        const winnerConfirmation = confirmationNumbers[winnerCount];
-                        winners.push({ player: currentPlayer, confirmation: winnerConfirmation });
-                        localStorage.setItem("winners", JSON.stringify(winners));
-                        winnerCount++;
-                        document.getElementById('result').textContent = "You won!";
-                        document.getElementById('confirmation').textContent = `Your confirmation number: ${winnerConfirmation}`;
+                        if (confirmationNumbers.length > 0) {
+                            const winnerConfirmation = confirmationNumbers.shift();
+                            winners.push({ player: currentPlayer, confirmation: winnerConfirmation });
+
+                            localStorage.setItem("winners", JSON.stringify(winners));
+                            localStorage.setItem("confirmationNumbers", JSON.stringify(confirmationNumbers));
+
+                            winnerCount++;
+                            document.getElementById('result').textContent = "You won!";
+                            document.getElementById('confirmation').textContent = `Your confirmation number: ${winnerConfirmation}`;
+                        } else {
+                            document.getElementById('result').textContent = "Sorry, no confirmation numbers left!";
+                        }
                     } else {
-                        document.getElementById('result').textContent = "You can only win twice a month.";
+                        document.getElementById('result').textContent = "You can only win once per month.";
                     }
                 }
             } else {
@@ -182,7 +188,6 @@
             }
         }
 
-        // Initialize game and slots
         initializeGame();
         initializeSlots();
     </script>
