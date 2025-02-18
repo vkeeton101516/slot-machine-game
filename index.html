@@ -103,21 +103,12 @@
             "25893455", "24751855"
         ];
 
-        let spinCount = parseInt(localStorage.getItem("spinCount")) || 0;
-        let lastSpinDate = localStorage.getItem("lastSpinDate") || "";
-        let today = new Date().toDateString();
         let winners = JSON.parse(localStorage.getItem("winners")) || [];
+        let winnerCount = winners.length;
+        let currentPlayer = "player";  // Replace this with your player identification logic (for example, use login or session ID)
 
-        const maxSpins = 5;
+        const maxWinsPerPlayer = 2;
         const maxWins = 20;
-
-        if (lastSpinDate !== today) {
-            spinCount = 0;
-            winners = [];
-            localStorage.setItem("spinCount", 0);
-            localStorage.setItem("winners", JSON.stringify(winners));
-            localStorage.setItem("lastSpinDate", today);
-        }
 
         function getRandomImage() {
             return slotImages[Math.floor(Math.random() * slotImages.length)];
@@ -129,9 +120,17 @@
             document.getElementById("slot3").src = getRandomImage();
         }
 
+        function initializeGame() {
+            if (winnerCount >= maxWins) {
+                document.getElementById('warning').textContent = "Sorry, all 20 wins have been taken for this month!";
+            } else {
+                document.getElementById('warning').textContent = "";
+            }
+        }
+
         function spin() {
-            if (spinCount >= maxSpins) {
-                document.getElementById('warning').textContent = "You have reached the daily spin limit!";
+            if (winnerCount >= maxWins) {
+                document.getElementById('result').textContent = "Sorry, all 20 wins have been taken for this month!";
                 return;
             }
 
@@ -160,28 +159,19 @@
                     checkWin(slot1, slot2, slot3);
                 }
             }, intervalDuration);
-
-            spinCount++;
-            localStorage.setItem("spinCount", spinCount);
         }
 
         function checkWin(slot1, slot2, slot3) {
             if (slot1.src.includes("cherries") && slot2.src.includes("cherries") && slot3.src.includes("cherries")) {
-                if (winners.length >= maxWins) {
-                    document.getElementById('result').textContent = "Sorry, all winners have been selected for this month!";
+                if (winnerCount >= maxWins) {
+                    document.getElementById('result').textContent = "Sorry, all 20 wins have been taken for this month!";
                 } else {
-                    const winnerConfirmation = confirmationNumbers[winners.length];
-                    winners.push(winnerConfirmation);
-                    localStorage.setItem("winners", JSON.stringify(winners));
-                    document.getElementById('result').textContent = "You won!";
-                    document.getElementById('confirmation').textContent = `Your confirmation number: ${winnerConfirmation}`;
-                }
-            } else {
-                document.getElementById('result').textContent = "Try again!";
-            }
-        }
-
-        initializeSlots();
-    </script>
-</body>
-</html>
+                    // Ensure player hasn't won more than 2 times
+                    let playerWins = winners.filter(winner => winner.player === currentPlayer).length;
+                    if (playerWins < maxWinsPerPlayer) {
+                        const winnerConfirmation = confirmationNumbers[winnerCount];
+                        winners.push({ player: currentPlayer, confirmation: winnerConfirmation });
+                        localStorage.setItem("winners", JSON.stringify(winners));
+                        winnerCount++;
+                        document.getElementById('result').textContent = "You won!";
+                        document.getElementById('confirmation').textContent = `Your confirmation number: ${
